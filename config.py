@@ -3,6 +3,7 @@ This file contains all the configurations needed by the model and the training p
 All hyperparameters will be defined here
 '''
 
+
 class DataMode(enumerate):
     TRAIN = 'train'
     VAL = 'val'
