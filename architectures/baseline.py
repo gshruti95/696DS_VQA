@@ -8,9 +8,9 @@ import torch.nn.functional as F
 from torch.autograd import Variable
 
 
-class BaselineMode(nn.Module):
+class BaselineModel(nn.Module):
 
-    def __init__(self, **params):
+    def __init__(self):
         pass
 
 

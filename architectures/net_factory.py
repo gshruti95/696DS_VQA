@@ -1,11 +1,18 @@
 '''
 This file contains the factory definitons for fetching the appropriate network for training
 '''
-
+from ..enums import ModelType
+from baseline import BaselineModel
 
 def get_network(network_type):
     '''
-    A bunch of if else statements to return the instance of the appropriate model
-    network_type: NetworkType enum is defined in the config file
+    returns an instance of a model with randomly initialized weights
     '''
-    pass
+    if network_type == ModelType.BASELINE:
+        return BaselineModel()
+    elif network_type == ModelType.FILM:
+        pass
+    elif network_type == ModelType.STACKED_CO_ATTENTION:
+        pass
+    elif network_type == ModelType.MEMORY_NETWORK:
+        pass

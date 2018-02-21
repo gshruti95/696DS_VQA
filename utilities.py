@@ -6,6 +6,45 @@ import sys
 import os
 import config
 import numpy as np
+import json
+
+
+def get_question_vocabulary(json_filepath):
+    json_data = file(json_filepath).read()
+    question_list = json.loads(json_data)
+    word_dictionary = {}
+    answer_dictionary = {}
+    for item in question_list:
+        question = item['question']
+        answer = item['answer']
+        word_list = question.replace('?' , '').replace(';' , '').lower().split(' ')
+        for word in word_list:
+            if word == '':
+                continue
+            word_dictionary[word] = True
+        if answer == '':
+            continue
+        answer_dictionary[answer] = True
+        
+    return (word_dictionary.keys(), answer_dictionary.keys())
+
+def encode_question(question_string, question_vocab, max_question_length):
+    encoded_list = []
+    word_list = question_string.replace('?','').replace(';','').lower().split(' ')
+    for word in word_list:
+        index = question_vocab.find(word)
+        encoded_list.append(index)
+    counter = len(word_list)
+    stop_symbol_index = len(question_vocab)
+    while counter < max_question_length:
+        encoded_list.append(stop_symbol_index)
+        counter = counter + 1
+
+    return encoded_list
+
+
+def encode_answer(answer_word, answer_vocab):
+    return answer_vocab.find(answer_word)
 
 
 def get_accuracy(confusion_matrix):
