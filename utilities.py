@@ -7,9 +7,10 @@ import os
 import config
 import numpy as np
 import json
+from data_loaders import data_loader_factory
 
 
-def get_question_vocabulary(json_filepath):
+def get_vocabulary(json_filepath):
     json_data = file(json_filepath).read()
     question_list = json.loads(json_data)
     word_dictionary = {}
@@ -32,7 +33,7 @@ def encode_question(question_string, question_vocab, max_question_length):
     encoded_list = []
     word_list = question_string.replace('?','').replace(';','').lower().split(' ')
     for word in word_list:
-        index = question_vocab.find(word)
+        index = question_vocab.index(word)
         encoded_list.append(index)
     counter = len(word_list)
     stop_symbol_index = len(question_vocab)
@@ -44,8 +45,7 @@ def encode_question(question_string, question_vocab, max_question_length):
 
 
 def encode_answer(answer_word, answer_vocab):
-    return answer_vocab.find(answer_word)
-
+    return answer_vocab.index(answer_word)
 
 def get_accuracy(confusion_matrix):
     match_count = 0
@@ -98,6 +98,9 @@ def get_f1_score(confusion_matrix):
         return 0.0
 
 def get_confusion_matrix(predicted_array, true_array):
-    # TODO
-    #return confusion_matrix
-    pass
+    temp_confusion_matrix = data_loader_factory.get_dataset_specific_confusion_matrix(config.DATALOADER_TYPE)
+    for index in xrange(true_array.shape[0]):
+        true_class = true_array[index]
+        predicted_class = predicted_array[index]
+        temp_confusion_matrix[true_class, predicted_class] += 1
+    return temp_confusion_matrix

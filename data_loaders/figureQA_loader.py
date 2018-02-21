@@ -16,13 +16,15 @@ class FigureQADataset(data.Dataset):
     Provides deifnitions for the FigureQA dataset loader.
     '''
     def __init__(self, data_mode, question_vocab, answer_vocab):
+        self.question_vocab = question_vocab
+        self.answer_vocab = answer_vocab
         self.images_path = config.FIGUREQA_DATASET_PATH + config.IMAGES + '/' + data_mode + '/'
         questions_path = config.FIGUREQA_DATASET_PATH + config.QUESTIONS + '/'
         question_json_filename = config.FIGUREQA_QUESTION_FILES[data_mode]
         question_json = file(questions_path + question_json_filename).read()
-        self.questions_list = json.loads(question_json)
-        self.question_vocab = question_vocab
-        self.answer_vocab = answer_vocab
+        questions_list = json.loads(question_json)
+        self.questions_list = self.perform_question_preprocessing(questions_list)
+        
     
     def __getitem__(self, index):
         question_item = self.questions_list[index]
@@ -41,3 +43,13 @@ class FigureQADataset(data.Dataset):
 
     def __len__(self):
         return len(self.questions_list)
+
+    def perform_question_preprocessing(self, questions_list):
+        modified_list = []
+        for item in questions_list:
+            if item.has_key(config.ANSWER_KEY) == True:
+                answer = item[config.ANSWER_KEY]
+                if len(answer) == 0:
+                    continue
+            modified_list.append(item)
+        return modified_list
