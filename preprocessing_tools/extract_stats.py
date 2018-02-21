@@ -16,7 +16,7 @@ def main():
         #print item
         question = item['question']
         answer = item['answer']
-        word_list = question.split(' ')
+        word_list = question.replace('?','').replace(';','').lower().split(' ')
         for word in word_list:
             if word == '':
                 continue
