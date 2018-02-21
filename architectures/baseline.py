@@ -46,8 +46,10 @@ class BaselineModel(nn.Module):
         self.linear_layer1 = nn.Linear(64 * 2 * 2, 128)
         self.linear_layer2 = nn.Linear(256, self.num_output_labels)
 
-
-
+    '''
+    images are of type Variable of FloatTensor
+    questions are a variable of LongTensor
+    '''
     def forward(self, images, questions):
         features = self.conv_layer1(images)
         features = self.conv_layer2(features)

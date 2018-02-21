@@ -1,6 +1,9 @@
 # VQA
 Deep learning models for visual reasoning on CLEVR, FigureQA and SHAPES datatset
 
+To train a model, first set the parameters in config file correctly and then execute the train.py using the command:
+python train.py
+
 
 clevr -> images -> train, test, val
                    (CLEVR_train_#ID#.png), (CLEVR_test_#ID#.png),
