@@ -22,15 +22,15 @@ MODEL_LOAD_FILEPATH = ''
 #----------------------------------------------------------------------------------------
 # MISC Params
 TRAIN_MODE = True 
-USE_GPU = False
+USE_GPU = True
 DISPLAY_LOSS_EVERY = 20
 DISPLAY_METRICS_EVERY = 5
 #-----------------------------------------------------------------------------------------
 # TRAINING HYPERPARAMETERS
-BATCH_SIZE = 100
+BATCH_SIZE = 25
 LEARNING_RATE = 1e-4
 WEIGHT_DECAY = 0
-EPOCH_COUNT = 20
+EPOCH_COUNT = 10
 #------------------------------------------------------------------------------------------
 # KEYWORDS
 IMAGES = 'images'

@@ -38,13 +38,14 @@ def train(model, data_loader, optimizer, criterion, epoch_count):
             images = Variable(images, requires_grad = False)
             questions = Variable(torch.stack(questions, dim = 1), requires_grad = False)
             labels = Variable(labels, requires_grad = False)
-            images = check_and_get_gpu_instance(images)
+            images = check_and_get_gpu_instance(images.float())
             questions = check_and_get_gpu_instance(questions)
             target_labels = check_and_get_gpu_instance(labels)
             # forward, backward, step
             model.zero_grad()
             images = images.permute(0, 3, 1, 2)
-            predictions = model(images.float(), questions)
+            #print(images)
+            predictions = model(images, questions)
             loss = criterion(predictions , target_labels)
             if mini_index % config.DISPLAY_LOSS_EVERY == 0:
             	print('loss for %d/%d epoch, %d/%d batch = %f' % (epoch_index + 1, epoch_count, mini_index + 1, len(data_loader), loss.data[0]))

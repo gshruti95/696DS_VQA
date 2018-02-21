@@ -5,7 +5,6 @@ import torch
 import torch.utils.data as data
 from scipy import misc
 import config
-from skimage.transform import resize
 import utilities
 import json
 
@@ -36,7 +35,7 @@ class ShapesDataset(data.Dataset):
         encoded_question = utilities.encode_question(question, self.question_vocab, config.SHAPES_DICTIONARY[config.MAX_QUESTION_LENGTH])
         image = misc.imread(self.images_path + image_filename)
         image_size = config.SHAPES_DICTIONARY[config.IMAGE_SIZE]
-        modified_image = resize(image, (image_size, image_size), mode = 'constant')
+        modified_image = misc.imresize(image, (image_size, image_size))
         return (modified_image, encoded_question, answer_label)
 
     def __len__(self):

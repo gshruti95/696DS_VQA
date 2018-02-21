@@ -57,9 +57,7 @@ class BaselineModel(nn.Module):
 
         embeddings = self.embedding_matrix(questions)
         embeddings = embeddings.permute(1, 0, 2)
-        h0 = Variable(torch.randn((1, self.lstm_hidden_state_size)))
-        c0 = Variable(torch.randn((1, self.lstm_hidden_state_size)))
-        _, (question_features, _) = self.question_lstm(embeddings, (h0, c0))
+        _, (question_features, _) = self.question_lstm(embeddings)
         question_features = question_features.view(-1, self.lstm_hidden_state_size)
         combined_features = torch.cat((image_features, question_features), dim = 1)
         output = self.linear_layer2(combined_features)

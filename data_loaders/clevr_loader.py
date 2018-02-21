@@ -7,7 +7,6 @@ import torch
 import torch.utils.data as data
 from scipy import misc
 import config
-from skimage.transform import resize
 import utilities
 import json
 
@@ -39,7 +38,7 @@ class CLEVRDataset(data.Dataset):
         image = misc.imread(self.images_path + image_filename)
         image = image[:, :, 0 : config.CLEVR_DICTIONARY[config.CHANNEL_COUNT]]
         image_size = config.CLEVR_DICTIONARY[config.IMAGE_SIZE]
-        modified_image = resize(image, (image_size, image_size), mode = 'constant')
+        modified_image = misc.imresize(image, (image_size, image_size))
         return (modified_image, encoded_question, answer_label)
 
     def __len__(self):
