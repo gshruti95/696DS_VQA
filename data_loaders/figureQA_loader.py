@@ -22,7 +22,7 @@ class FigureQADataset(data.Dataset):
         question_json_filename = config.FIGUREQA_QUESTION_FILES[data_mode]
         question_json = file(questions_path + question_json_filename).read()
         questions_list = json.loads(question_json)
-        self.questions_list = self.perform_question_preprocessing(questions_list)
+        self.questions_list = questions_list #self.perform_question_preprocessing(questions_list)
         
     
     def __getitem__(self, index):
@@ -36,13 +36,15 @@ class FigureQADataset(data.Dataset):
         image_filename = question_item[config.IMAGE_FILENAME_KEY]
         encoded_question = utilities.encode_question(question, self.question_vocab, config.FIGUREQA_DICTIONARY[config.MAX_QUESTION_LENGTH])
         image = misc.imread(self.images_path + image_filename)
+        image = image[:, :, 0 : config.FIGUREQA_DICTIONARY[config.CHANNEL_COUNT]]
         image_size = config.FIGUREQA_DICTIONARY[config.IMAGE_SIZE]
         modified_image = misc.imresize(image, (image_size, image_size))
         return (modified_image, encoded_question, answer_label)
 
     def __len__(self):
         return len(self.questions_list)
-
+    
+    '''
     def perform_question_preprocessing(self, questions_list):
         modified_list = []
         for item in questions_list:
@@ -52,3 +54,4 @@ class FigureQADataset(data.Dataset):
                     continue
             modified_list.append(item)
         return modified_list
+    '''
