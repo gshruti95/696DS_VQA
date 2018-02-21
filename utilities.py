@@ -31,11 +31,15 @@ def get_vocabulary(json_filepath):
 
 def encode_question(question_string, question_vocab, max_question_length):
     encoded_list = []
-    word_list = question_string.replace('?','').replace(';','').lower().split(' ')
+    word_list = question_string.replace('?','').replace(';','').replace('\n','').lower().split(' ')
+    counter = 0
     for word in word_list:
+        if len(word) == 0:
+            continue
         index = question_vocab.index(word)
         encoded_list.append(index)
-    counter = len(word_list)
+        counter = counter + 1
+    
     stop_symbol_index = len(question_vocab)
     while counter < max_question_length:
         encoded_list.append(stop_symbol_index)
