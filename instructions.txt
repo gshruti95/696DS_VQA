@@ -1,0 +1,18 @@
+Here are some of instruction on how to keep making changes to the code base:
+1. For architecture changes, observe the interface followed by baseline.py in architectures folder.
+    The forward function uses the following interface:
+    image are passed as Variable of type torch.FloatTensor or torch.cuda.FloatTensor depending on the mode in which the code is executed.
+
+    The forward function returns the scores obtained and DOES NOT APPLY ANY SOFTMAX LAYER IN THE ARCHITECTURE. Returns a variable of dimensions (N, class_size)
+
+2. When adding a new architecture to the codebase, place it in the architectures folder and update the definitions in the net_factory.py.
+    Update the enum value for MOdelType in enums.py
+
+3. When adding a new dataset, follow the same folder hierarchy as mentioned in the README. The question json files follow the same structure.
+    Update the definitions in data_loader_factory.py file with appropriate changes.
+    Update the DataLoaderType in enums.py
+    Add the following in config.py: 
+        new DATASET_PATH
+        new DATASET_DICTIONARY
+        new DATASET_QUESTION_FILES dictionary
+ 

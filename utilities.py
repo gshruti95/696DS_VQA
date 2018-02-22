@@ -6,7 +6,50 @@ import sys
 import os
 import config
 import numpy as np
+import json
+from data_loaders import data_loader_factory
 
+
+def get_vocabulary(json_filepath):
+    json_data = file(json_filepath).read()
+    question_list = json.loads(json_data)
+    word_dictionary = {}
+    answer_dictionary = {}
+    for item in question_list:
+        question = item['question']
+        answer = item['answer']
+        word_list = question.replace('?' , '').replace(';' , '').lower().split(' ')
+        for word in word_list:
+            if word == '':
+                continue
+            word_dictionary[word] = True
+        if answer == '':
+            continue
+        answer_dictionary[answer] = True
+        
+    return (word_dictionary.keys(), answer_dictionary.keys())
+
+def encode_question(question_string, question_vocab, max_question_length):
+    encoded_list = []
+    word_list = question_string.replace('?','').replace(';','').replace('\n','').lower().split(' ')
+    counter = 0
+    for word in word_list:
+        if len(word) == 0:
+            continue
+        index = question_vocab.index(word)
+        encoded_list.append(index)
+        counter = counter + 1
+    
+    stop_symbol_index = len(question_vocab)
+    while counter < max_question_length:
+        encoded_list.append(stop_symbol_index)
+        counter = counter + 1
+
+    return encoded_list
+
+
+def encode_answer(answer_word, answer_vocab):
+    return answer_vocab.index(answer_word)
 
 def get_accuracy(confusion_matrix):
     match_count = 0
@@ -59,6 +102,9 @@ def get_f1_score(confusion_matrix):
         return 0.0
 
 def get_confusion_matrix(predicted_array, true_array):
-    # TODO
-    #return confusion_matrix
-    pass
+    temp_confusion_matrix = data_loader_factory.get_dataset_specific_confusion_matrix(config.DATALOADER_TYPE)
+    for index in xrange(true_array.shape[0]):
+        true_class = true_array[index]
+        predicted_class = predicted_array[index]
+        temp_confusion_matrix[true_class, predicted_class] += 1
+    return temp_confusion_matrix
