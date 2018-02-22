@@ -46,7 +46,7 @@ class CLEVRDataset(data.Dataset):
 
     def perform_question_preprocessing(self, questions_list):
         modified_list = []
-        for item in questions_list:
+        for item in questions_list['questions']:
             if item.has_key(config.ANSWER_KEY) == True:
                 answer = item[config.ANSWER_KEY]
                 if len(answer) == 0:
