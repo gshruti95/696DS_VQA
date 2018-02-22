@@ -122,7 +122,8 @@ class FiLM(nn.Module):
         kaiming_uniform(self.film.weight)
         self.film.bias.data.zero_()
 
-    def forward(self, image, question, question_len):
+    def forward(self, image, question):
+	question_len = [len(q) for q in question]
         out = self.conv(image)
 
         embed = self.embed(question)
