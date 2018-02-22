@@ -15,7 +15,15 @@ def get_vocabulary(json_filepath):
     question_list = json.loads(json_data)
     word_dictionary = {}
     answer_dictionary = {}
-    for item in question_list:
+    	#print question_list[0]
+   # print len(question_list)
+   # print question_list.keys()	
+ #   flag=0
+    for item in question_list['questions']:
+    #    if flag==0:
+#		flag=1
+#		continue
+#	print item
         question = item['question']
         answer = item['answer']
         word_list = question.replace('?' , '').replace(';' , '').lower().split(' ')

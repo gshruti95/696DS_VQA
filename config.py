@@ -6,31 +6,31 @@ from enums import DataLoaderType, ModelType, DataMode
 
 
 #---------------------------------------------------------------------------------
-DATALOADER_TYPE = DataLoaderType.SHAPES
-MODEL_TYPE = ModelType.BASELINE
+DATALOADER_TYPE = DataLoaderType.CLEVR
+MODEL_TYPE = ModelType.FILM
 #-----------------------------------------------------------------------------------
 # Dataset Paths
-CLEVR_DATASET_PATH = '../datasets/CLEVR/'
+CLEVR_DATASET_PATH = '/home/srideepikaja/vqa/datasets/CLEVR/'
 FIGUREQA_DATASET_PATH = '../datasets/FIGUREQA/'
 SHAPES_DATASET_PATH = '../datasets/SHAPES/'
 
 #-------------------------------------------------------------------------------------
 # MODEL PATHS
-MODEL_SAVE_FILEPATH = './baseline_model.pt'
+MODEL_SAVE_FILEPATH = './film_model.pt'
 MODEL_LOAD_FILEPATH = ''
 
 #----------------------------------------------------------------------------------------
 # MISC Params
 TRAIN_MODE = True 
 USE_GPU = True
-DISPLAY_LOSS_EVERY = 20
-DISPLAY_METRICS_EVERY = 5
+DISPLAY_LOSS_EVERY = 1
+DISPLAY_METRICS_EVERY = 1
 #-----------------------------------------------------------------------------------------
 # TRAINING HYPERPARAMETERS
-BATCH_SIZE = 25
-LEARNING_RATE = 1e-4
-WEIGHT_DECAY = 0
-EPOCH_COUNT = 10
+BATCH_SIZE = 64
+LEARNING_RATE = 3e-4
+WEIGHT_DECAY = 1e-5
+EPOCH_COUNT = 1
 #------------------------------------------------------------------------------------------
 # KEYWORDS
 IMAGES = 'images'
@@ -47,7 +47,7 @@ STOP = 'STOP'
 #-------------------------------------------------------------------------------------------
 # Dataset Dictionaries
 CLEVR_DICTIONARY = {IMAGE_SIZE : 30, QUESTION_VOCAB_SIZE : 81, ANSWER_VOCAB_SIZE : 28, MAX_QUESTION_LENGTH : 44, CHANNEL_COUNT : 3}
-CLEVR_QUESTION_FILES = {DataMode.TRAIN : 'clevr_train.json', DataMode.TEST : 'clevr_test.json', DataMode.VAL : 'clevr_val.json'}
+CLEVR_QUESTION_FILES = {DataMode.TRAIN : 'CLEVR_train_questions.json', DataMode.TEST : 'CLEVR_test_questions.json', DataMode.VAL : 'CLEVR_val_questions.json'}
 FIGUREQA_DICTIONARY = {IMAGE_SIZE : 30, QUESTION_VOCAB_SIZE : 85, ANSWER_VOCAB_SIZE : 2, MAX_QUESTION_LENGTH : 12, CHANNEL_COUNT : 3}
 FIGUREQA_QUESTION_FILES = {DataMode.TRAIN : 'FigureQA_train.json', DataMode.TEST : 'FigureQA_test.json', DataMode.VAL : 'FigureQA_val.json'}
 SHAPES_DICTIONARY = {IMAGE_SIZE : 30, QUESTION_VOCAB_SIZE : 15, ANSWER_VOCAB_SIZE : 2, MAX_QUESTION_LENGTH : 12}
