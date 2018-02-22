@@ -10,7 +10,7 @@ DATALOADER_TYPE = DataLoaderType.CLEVR
 MODEL_TYPE = ModelType.FILM
 #-----------------------------------------------------------------------------------
 # Dataset Paths
-CLEVR_DATASET_PATH = '/home/srideepikaja/vqa/datasets/CLEVR/'
+CLEVR_DATASET_PATH = '../vqa/datasets/CLEVR/'
 FIGUREQA_DATASET_PATH = '../datasets/FIGUREQA/'
 SHAPES_DATASET_PATH = '../datasets/SHAPES/'
 

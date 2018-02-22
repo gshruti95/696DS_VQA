@@ -2,6 +2,7 @@ import torch
 from torch import nn
 from torch.nn.init import kaiming_uniform, normal
 import torch.nn.functional as F
+import config
 
 class CNN(nn.Module):
     def __init__(self, n_blocks, filter_size):
@@ -99,10 +100,12 @@ class Classifier(nn.Module):
         return out
 
 class FiLM(nn.Module):
-    def __init__(self, n_vocab, n_cnn=4, n_resblock=4, conv_hidden=128, embed_hidden=200,
-                 gru_hidden=4096, mlp_hidden=256, classes=29):
-       	nn.Module.__init__(self)
-
+    def __init__(self, dataset_dictionary, n_cnn=4, n_resblock=4, conv_hidden=128, embed_hidden=200, gru_hidden=4096, mlp_hidden=256, classes=29):
+   # def __init__(self, n_vocab, n_cnn=4, n_resblock=4, conv_hidden=128, embed_hidden=200,
+   #              gru_hidden=4096, mlp_hidden=256, classes=29):
+       	super(FiLM, self).__init__()
+        self.num_question_word = dataset_dictionary[config.QUESTION_VOCAB_SIZE]
+        n_vocab = self.num_question_word
         self.conv = CNN(n_cnn, conv_hidden)
         self.resblocks = nn.ModuleList()
         for i in range(n_resblock):
