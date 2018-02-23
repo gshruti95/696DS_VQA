@@ -3,7 +3,8 @@ This file contains all the configurations needed by the model and the training p
 All hyperparameters will be defined here
 '''
 from enums import DataLoaderType, ModelType, DataMode
-
+import datetime
+import time
 
 #---------------------------------------------------------------------------------
 DATALOADER_TYPE = DataLoaderType.CLEVR
@@ -16,7 +17,7 @@ SHAPES_DATASET_PATH = '../datasets/SHAPES/'
 
 #-------------------------------------------------------------------------------------
 # MODEL PATHS
-MODEL_SAVE_FILEPATH = './film_model.pt'
+MODEL_SAVE_FILEPATH = 'film_{}_{}.pt'.format(str(datetime.date.today()),str(int(time.time())))
 MODEL_LOAD_FILEPATH = ''
 
 #----------------------------------------------------------------------------------------
