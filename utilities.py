@@ -19,7 +19,7 @@ def get_vocabulary(json_filepath):
    # print len(question_list)
    # print question_list.keys()	
  #   flag=0
-    for item in question_list['questions']:
+    for item in question_list:
     #    if flag==0:
 #		flag=1
 #		continue
