@@ -16,7 +16,9 @@ SHAPES_DATASET_PATH = '../datasets/SHAPES/'
 
 #-------------------------------------------------------------------------------------
 # MODEL PATHS
-MODEL_SAVE_FILEPATH = './baseline_model.pt'
+CHECKPOINT_FREQUENCY = 1
+MODEL_SAVE_FILEPATH = './'
+MODEL_SAVE_FILENAME = 'baseline_' #please dont add any file extensions
 MODEL_LOAD_FILEPATH = ''
 
 #----------------------------------------------------------------------------------------
@@ -27,7 +29,7 @@ DISPLAY_LOSS_EVERY = 20
 DISPLAY_METRICS_EVERY = 5
 #-----------------------------------------------------------------------------------------
 # TRAINING HYPERPARAMETERS
-BATCH_SIZE = 25
+BATCH_SIZE = 100
 LEARNING_RATE = 1e-4
 WEIGHT_DECAY = 0
 EPOCH_COUNT = 10
@@ -44,6 +46,7 @@ ANSWER_VOCAB_SIZE = 'ANSWER_VOCAB_SIZE'
 MAX_QUESTION_LENGTH = 'MAX_QUESTION_LENGTH'
 CHANNEL_COUNT = 'CHANNEL_COUNT'
 STOP = 'STOP'
+PYTORCH_FILE_EXTENSION = '.pt'
 #-------------------------------------------------------------------------------------------
 # Dataset Dictionaries
 CLEVR_DICTIONARY = {IMAGE_SIZE : 30, QUESTION_VOCAB_SIZE : 81, ANSWER_VOCAB_SIZE : 28, MAX_QUESTION_LENGTH : 44, CHANNEL_COUNT : 3}

@@ -16,8 +16,8 @@ def get_vocabulary(json_filepath):
     word_dictionary = {}
     answer_dictionary = {}
     for item in question_list:
-        question = item['question']
-        answer = item['answer']
+        question = item[config.QUESTION_KEY]
+        answer = item[config.ANSWER_KEY]
         word_list = question.replace('?' , '').replace(';' , '').lower().split(' ')
         for word in word_list:
             if word == '':
