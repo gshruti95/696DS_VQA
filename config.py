@@ -3,35 +3,36 @@ This file contains all the configurations needed by the model and the training p
 All hyperparameters will be defined here
 '''
 from enums import DataLoaderType, ModelType, DataMode
-import datetime
-import time
+
 
 #---------------------------------------------------------------------------------
-DATALOADER_TYPE = DataLoaderType.CLEVR
-MODEL_TYPE = ModelType.FILM
+DATALOADER_TYPE = DataLoaderType.SHAPES
+MODEL_TYPE = ModelType.BASELINE
 #-----------------------------------------------------------------------------------
 # Dataset Paths
-CLEVR_DATASET_PATH = '../vqa/datasets/CLEVR/'
+CLEVR_DATASET_PATH = '../datasets/CLEVR/'
 FIGUREQA_DATASET_PATH = '../datasets/FIGUREQA/'
 SHAPES_DATASET_PATH = '../datasets/SHAPES/'
 
 #-------------------------------------------------------------------------------------
 # MODEL PATHS
-MODEL_SAVE_FILEPATH = 'film_{}_{}.pt'.format(str(datetime.date.today()),str(int(time.time())))
+CHECKPOINT_FREQUENCY = 1
+MODEL_SAVE_FILEPATH = './'
+MODEL_SAVE_FILENAME = 'baseline_' #please dont add any file extensions
 MODEL_LOAD_FILEPATH = ''
 
 #----------------------------------------------------------------------------------------
 # MISC Params
 TRAIN_MODE = True 
 USE_GPU = True
-DISPLAY_LOSS_EVERY = 1
-DISPLAY_METRICS_EVERY = 1
+DISPLAY_LOSS_EVERY = 20
+DISPLAY_METRICS_EVERY = 5
 #-----------------------------------------------------------------------------------------
 # TRAINING HYPERPARAMETERS
-BATCH_SIZE = 64
-LEARNING_RATE = 3e-4
-WEIGHT_DECAY = 1e-5
-EPOCH_COUNT = 1
+BATCH_SIZE = 100
+LEARNING_RATE = 1e-4
+WEIGHT_DECAY = 0
+EPOCH_COUNT = 10
 #------------------------------------------------------------------------------------------
 # KEYWORDS
 IMAGES = 'images'
@@ -45,10 +46,11 @@ ANSWER_VOCAB_SIZE = 'ANSWER_VOCAB_SIZE'
 MAX_QUESTION_LENGTH = 'MAX_QUESTION_LENGTH'
 CHANNEL_COUNT = 'CHANNEL_COUNT'
 STOP = 'STOP'
+PYTORCH_FILE_EXTENSION = '.pt'
 #-------------------------------------------------------------------------------------------
 # Dataset Dictionaries
 CLEVR_DICTIONARY = {IMAGE_SIZE : 30, QUESTION_VOCAB_SIZE : 81, ANSWER_VOCAB_SIZE : 28, MAX_QUESTION_LENGTH : 44, CHANNEL_COUNT : 3}
-CLEVR_QUESTION_FILES = {DataMode.TRAIN : 'CLEVR_train_questions.json', DataMode.TEST : 'CLEVR_test_questions.json', DataMode.VAL : 'CLEVR_val_questions.json'}
+CLEVR_QUESTION_FILES = {DataMode.TRAIN : 'clevr_train.json', DataMode.TEST : 'clevr_test.json', DataMode.VAL : 'clevr_val.json'}
 FIGUREQA_DICTIONARY = {IMAGE_SIZE : 30, QUESTION_VOCAB_SIZE : 85, ANSWER_VOCAB_SIZE : 2, MAX_QUESTION_LENGTH : 12, CHANNEL_COUNT : 3}
 FIGUREQA_QUESTION_FILES = {DataMode.TRAIN : 'FigureQA_train.json', DataMode.TEST : 'FigureQA_test.json', DataMode.VAL : 'FigureQA_val.json'}
 SHAPES_DICTIONARY = {IMAGE_SIZE : 30, QUESTION_VOCAB_SIZE : 15, ANSWER_VOCAB_SIZE : 2, MAX_QUESTION_LENGTH : 12}

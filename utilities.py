@@ -15,17 +15,9 @@ def get_vocabulary(json_filepath):
     question_list = json.loads(json_data)
     word_dictionary = {}
     answer_dictionary = {}
-    	#print question_list[0]
-   # print len(question_list)
-   # print question_list.keys()	
- #   flag=0
     for item in question_list:
-    #    if flag==0:
-#		flag=1
-#		continue
-#	print item
-        question = item['question']
-        answer = item['answer']
+        question = item[config.QUESTION_KEY]
+        answer = item[config.ANSWER_KEY]
         word_list = question.replace('?' , '').replace(';' , '').lower().split(' ')
         for word in word_list:
             if word == '':
@@ -115,4 +107,4 @@ def get_confusion_matrix(predicted_array, true_array):
         true_class = true_array[index]
         predicted_class = predicted_array[index]
         temp_confusion_matrix[true_class, predicted_class] += 1
-    return temp_confusion_matrix
+return temp_confusion_matrix
