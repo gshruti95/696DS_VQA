@@ -55,6 +55,10 @@ def train(model, data_loader, optimizer, criterion, epoch_count):
         if (epoch_index + 1) % config.DISPLAY_METRICS_EVERY == 0:
             predict(model, config.DataMode.TRAIN)
             predict(model, config.DataMode.VAL)
+        
+        if (epoch_index + 1) % config.CHECKPOINT_FREQUENCY == 0:
+            model_path = config.MODEL_SAVE_FILEPATH + config.MODEL_SAVE_FILENAME + str(epoch_index + 1) + config.PYTORCH_FILE_EXTENSION
+            save_model(model, model_path)
     
     return model
 
