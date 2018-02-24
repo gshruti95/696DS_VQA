@@ -10,7 +10,7 @@ DATALOADER_TYPE = DataLoaderType.SHAPES
 MODEL_TYPE = ModelType.BASELINE
 #-----------------------------------------------------------------------------------
 # Dataset Paths
-WORKING_DIR = './' # This is the path to vqa directory which also contains datasets, not VQA repo
+WORKING_DIR = './' # This is the path to vqa directory which contains datasets and VQA repository
 CLEVR_DATASET_PATH = WORKING_DIR + 'datasets/CLEVR/'
 FIGUREQA_DATASET_PATH = WORKING_DIR + 'datasets/FIGUREQA/'
 SHAPES_DATASET_PATH = WORKING_DIR + 'datasets/SHAPES/'
