@@ -21,7 +21,7 @@ CHECKPOINT_FREQUENCY = 1
 MODEL_SAVE_FILENAME = 'baseline_' #please dont add any file extensions
 MODEL_SAVE_DIRNAME = MODEL_SAVE_FILENAME + '/'
 MODEL_SAVE_FILEPATH = WORKING_DIR + MODEL_SAVE_DIRNAME + MODEL_SAVE_FILENAME
-EPOCH_NUMBER = '3' # Only set this if you need to resume training or for inference with the epoch number of the saved model
+EPOCH_NUMBER = '' # Only set this if you need to resume training or for inference with the epoch number of the saved model
 MODEL_LOAD_FILEPATH = MODEL_SAVE_FILEPATH + EPOCH_NUMBER + '.pt'
 #----------------------------------------------------------------------------------------
 # MISC Params
