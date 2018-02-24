@@ -19,11 +19,11 @@ SHAPES_DATASET_PATH = '../datasets/SHAPES/'
 CHECKPOINT_FREQUENCY = 1
 MODEL_SAVE_FILEPATH = './'
 MODEL_SAVE_FILENAME = 'baseline_' #please dont add any file extensions
-MODEL_LOAD_FILEPATH = ''
+MODEL_LOAD_FILEPATH = '' # Only set this variable with appropriate model path if you need to resume training or use for inferencce
 
 #----------------------------------------------------------------------------------------
 # MISC Params
-TRAIN_MODE = True 
+TRAIN_MODE = True
 USE_GPU = True
 DISPLAY_LOSS_EVERY = 20
 DISPLAY_METRICS_EVERY = 5
@@ -47,6 +47,8 @@ MAX_QUESTION_LENGTH = 'MAX_QUESTION_LENGTH'
 CHANNEL_COUNT = 'CHANNEL_COUNT'
 STOP = 'STOP'
 PYTORCH_FILE_EXTENSION = '.pt'
+EPOCH_STRING = 'EPOCH_STRING' 
+MODEL = 'MODEL'
 #-------------------------------------------------------------------------------------------
 # Dataset Dictionaries
 CLEVR_DICTIONARY = {IMAGE_SIZE : 30, QUESTION_VOCAB_SIZE : 81, ANSWER_VOCAB_SIZE : 28, MAX_QUESTION_LENGTH : 44, CHANNEL_COUNT : 3}
