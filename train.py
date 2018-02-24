@@ -57,7 +57,7 @@ def train(model, data_loader, optimizer, criterion, epoch_count, min_epoch_count
             predict(model, config.DataMode.VAL)
         
         if (epoch_index + 1) % config.CHECKPOINT_FREQUENCY == 0:
-            model_path = config.MODEL_SAVE_FILEPATH + config.MODEL_SAVE_FILENAME + str(epoch_index + 1) + config.PYTORCH_FILE_EXTENSION
+            model_path = config.MODEL_SAVE_FILEPATH + str(epoch_index + 1) + config.PYTORCH_FILE_EXTENSION
             save_model(model, epoch_index, model_path)
     
     return model
@@ -124,6 +124,9 @@ def save_model(model, epoch_index, model_path):
     state_dict = {}
     state_dict[config.EPOCH_STRING] = epoch_index
     state_dict[config.MODEL] = model
+
+    if not os.path.exists(config.WORKING_DIR + config.MODEL_SAVE_DIRNAME):
+        os.makedirs(config.WORKING_DIR + config.MODEL_SAVE_DIRNAME)
     torch.save(state_dict, model_path)
 
 
