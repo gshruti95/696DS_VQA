@@ -141,7 +141,6 @@ def main():
     if config.TRAIN_MODE == True:
         model = net_factory.get_network(config.MODEL_TYPE)
         model = fit(model)
-        save_model(model, config.MODEL_SAVE_FILEPATH)
     # set the model in evaluation mode
     else:
         model = load_model(config.MODEL_LOAD_FILEPATH)    
