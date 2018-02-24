@@ -146,7 +146,7 @@ def main():
     model = None
     if config.TRAIN_MODE == True:
         model = net_factory.get_network(config.MODEL_TYPE)
-        if len(config.MODEL_LOAD_FILEPATH) > 0:
+        if len(config.EPOCH_NUMBER) > 0:
             try:
                 model, min_epoch_count = load_model(config.MODEL_LOAD_FILEPATH)
                 model = fit(model, min_epoch_count)
@@ -163,7 +163,7 @@ def main():
             print('Provide appropriate model path and rerun for inference')
             return    
     # perform prediction
-    predict(model, DataMode.TEST, print_values = True)
+	predict(model, DataMode.TEST, print_values = True)
 
 
 if __name__ == '__main__':
