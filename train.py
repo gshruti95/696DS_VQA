@@ -29,10 +29,10 @@ def check_and_get_gpu_instance(item):
         return item.cuda()
     return item
 
-def train(model, data_loader, optimizer, criterion, epoch_count):
+def train(model, data_loader, optimizer, criterion, epoch_count, min_epoch_count = 0):
     # train the model for fixed number of epochs
     model = check_and_get_gpu_instance(model)
-    for epoch_index in xrange(epoch_count):
+    for epoch_index in range(min_epoch_count, epoch_count):
         for mini_index, (images, questions, labels) in enumerate(data_loader):
             # convert the images, questions and the labels to variables and then to cuda instances
             images = Variable(images, requires_grad = False)
@@ -58,11 +58,11 @@ def train(model, data_loader, optimizer, criterion, epoch_count):
         
         if (epoch_index + 1) % config.CHECKPOINT_FREQUENCY == 0:
             model_path = config.MODEL_SAVE_FILEPATH + config.MODEL_SAVE_FILENAME + str(epoch_index + 1) + config.PYTORCH_FILE_EXTENSION
-            save_model(model, model_path)
+            save_model(model, epoch_index, model_path)
     
     return model
 
-def fit(model):
+def fit(model, min_epoch_count = 0):
     # get the data loader iterator
     data_loader = get_data(DataMode.TRAIN)
     # define the objective
@@ -70,8 +70,7 @@ def fit(model):
     # define the optimizer
     optimizer = optim.Adam(model.parameters(), lr = config.LEARNING_RATE, weight_decay = config.WEIGHT_DECAY)
     # train
-    return train(model, data_loader, optimizer, criterion, config.EPOCH_COUNT)
-
+    return train(model, data_loader, optimizer, criterion, config.EPOCH_COUNT, min_epoch_count = min_epoch_count)
 
 def predict(model, data_mode, print_values = False):
     print('Computing metrics for ' + data_mode + ' mode.')
@@ -113,15 +112,19 @@ def load_model(model_path):
     '''
     Load model from the specified path
     '''
-    model = torch.load(model_path)
-    return model
+    state_dict = torch.load(model_path)
+    model = state_dict[config.MODEL]
+    return model, state_dict[config.EPOCH_STRING] + 1
 
 
-def save_model(model, model_path):
+def save_model(model, epoch_index, model_path):
     '''
     Save the pytorch model
     '''
-    torch.save(model, model_path)
+    state_dict = {}
+    state_dict[config.EPOCH_STRING] = epoch_index
+    state_dict[config.MODEL] = model
+    torch.save(state_dict, model_path)
 
 
 def get_data(data_mode):
@@ -140,10 +143,22 @@ def main():
     model = None
     if config.TRAIN_MODE == True:
         model = net_factory.get_network(config.MODEL_TYPE)
-        model = fit(model)
+        if len(config.MODEL_LOAD_FILEPATH) > 0:
+            try:
+                model, min_epoch_count = load_model(config.MODEL_LOAD_FILEPATH)
+                model = fit(model, min_epoch_count)
+            except:
+                print('Invalid path provided for loading the model')
+                return
+        else:
+            model = fit(model)
     # set the model in evaluation mode
     else:
-        model = load_model(config.MODEL_LOAD_FILEPATH)    
+        try:
+            model, _ = load_model(config.MODEL_LOAD_FILEPATH)
+        except:
+            print('Provide appropriate model path and rerun for inference')
+            return    
     # perform prediction
     predict(model, DataMode.TEST, print_values = True)
 
