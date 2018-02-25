@@ -156,7 +156,7 @@ def main():
     model = None
     if config.TRAIN_MODE == True:
         model = net_factory.get_network(config.MODEL_TYPE)
-        if len(config.EPOCH_NUMBER) > 0:
+        if len(config.MODEL_LOAD_FILEPATH) > 0:
             try:
                 model, min_epoch_count = load_model(config.MODEL_LOAD_FILEPATH)
                 model = fit(model, min_epoch_count)
