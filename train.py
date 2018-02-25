@@ -23,6 +23,8 @@ from architectures import net_factory
 from data_loaders import data_loader_factory
 from enums import DataMode
 
+import time
+
 
 def check_and_get_gpu_instance(item):
     if torch.cuda.is_available() == True and config.USE_GPU == True:
@@ -33,10 +35,17 @@ def train(model, data_loader, optimizer, criterion, epoch_count, min_epoch_count
     # train the model for fixed number of epochs
     model = check_and_get_gpu_instance(model)
     for epoch_index in range(min_epoch_count, epoch_count):
+        start_time = time.time()
         for mini_index, (images, questions, labels) in enumerate(data_loader):
             # convert the images, questions and the labels to variables and then to cuda instances
             images = Variable(images, requires_grad = False)
             questions = Variable(torch.stack(questions, dim = 1), requires_grad = False)
+            
+            # Reducing the question length for avoiding no-op recurrent time steps in processing question through RNN
+            numpy_questions = questions.data.numpy()
+            max_question_length = max([np.argmax(numpy_questions[i, :]) for i in xrange(numpy_questions.shape[0])]) + 1
+            questions = questions[:, 0 : max_question_length]
+            
             labels = Variable(labels, requires_grad = False)
             images = check_and_get_gpu_instance(images.float())
             questions = check_and_get_gpu_instance(questions)
@@ -44,7 +53,7 @@ def train(model, data_loader, optimizer, criterion, epoch_count, min_epoch_count
             # forward, backward, step
             model.zero_grad()
             images = images.permute(0, 3, 1, 2)
-            #print(images)
+            
             predictions = model(images, questions)
             loss = criterion(predictions , target_labels)
             if mini_index % config.DISPLAY_LOSS_EVERY == 0:
@@ -59,6 +68,7 @@ def train(model, data_loader, optimizer, criterion, epoch_count, min_epoch_count
         if (epoch_index + 1) % config.CHECKPOINT_FREQUENCY == 0:
             model_path = config.MODEL_SAVE_FILEPATH + config.MODEL_SAVE_FILENAME + str(epoch_index + 1) + config.PYTORCH_FILE_EXTENSION
             save_model(model, epoch_index, model_path)
+        print('Time taken to train epoch =' + str(time.time() - start_time))
     
     return model
 
