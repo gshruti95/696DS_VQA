@@ -10,16 +10,17 @@ DATALOADER_TYPE = DataLoaderType.SHAPES
 MODEL_TYPE = ModelType.BASELINE
 #-----------------------------------------------------------------------------------
 # Dataset Paths
-CLEVR_DATASET_PATH = '../datasets/CLEVR/'
-FIGUREQA_DATASET_PATH = '../datasets/FIGUREQA/'
-SHAPES_DATASET_PATH = '../datasets/SHAPES/'
+WORKING_DIR = '../' # This is the path to vqa directory which contains datasets and VQA repository
+CLEVR_DATASET_PATH = WORKING_DIR + 'datasets/CLEVR/'
+FIGUREQA_DATASET_PATH = WORKING_DIR + 'datasets/FIGUREQA/'
+SHAPES_DATASET_PATH = WORKING_DIR + 'datasets/SHAPES/'
 
-#-------------------------------------------------------------------------------------
+#----------------------------------------------------------------------------------------
 # MODEL PATHS
-CHECKPOINT_FREQUENCY = 1
-MODEL_SAVE_FILEPATH = './'
-MODEL_SAVE_FILENAME = 'baseline_' #please dont add any file extensions
-MODEL_LOAD_FILEPATH = '' # Only set this variable with appropriate model path if you need to resume training or use for inferencce
+MODEL_SAVE_FILENAME = MODEL_TYPE # Default filename value set to model type specified above
+MODEL_SAVE_DIRNAME = MODEL_TYPE  # Default folder value set to model type specified above
+MODEL_SAVE_FILEPATH = WORKING_DIR + MODEL_SAVE_DIRNAME + '/' + MODEL_SAVE_FILENAME + '_' # Do not EDIT this variable
+MODEL_LOAD_FILEPATH = '' # Provide the Relative or absolute path to the model that you wish to load for inference or to resume training
 
 #----------------------------------------------------------------------------------------
 # MISC Params
@@ -29,6 +30,7 @@ DISPLAY_LOSS_EVERY = 20
 DISPLAY_METRICS_EVERY = 5
 #-----------------------------------------------------------------------------------------
 # TRAINING HYPERPARAMETERS
+CHECKPOINT_FREQUENCY = 1
 BATCH_SIZE = 100
 LEARNING_RATE = 1e-4
 WEIGHT_DECAY = 0
