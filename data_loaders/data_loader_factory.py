@@ -54,6 +54,16 @@ def get_dataset_specific_confusion_matrix(data_loader_type):
 
     return np.zeros((class_count, class_count))
 
+def get_dataset_path(data_loader_type):
+    if data_loader_type == DataLoaderType.CLEVR:
+        return config.CLEVR_DATASET_PATH
+    elif data_loader_type == DataLoaderType.FIGUREQA:
+        return config.FIGUREQA_DATASET_PATH
+    elif data_loader_type == DataLoaderType.SHAPES:
+        return config.SHAPES_DATASET_PATH
+
+
+
 
 
 

@@ -153,6 +153,7 @@ def get_data(data_mode):
 
 
 def main():
+    utilities.perform_dataset_preprocessing()
     model = None
     if config.TRAIN_MODE == True:
         model = net_factory.get_network(config.MODEL_TYPE)

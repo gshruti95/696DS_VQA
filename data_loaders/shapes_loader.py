@@ -33,9 +33,8 @@ class ShapesDataset(data.Dataset):
         
         image_filename = question_item[config.IMAGE_FILENAME_KEY]
         encoded_question = utilities.encode_question(question, self.question_vocab, config.SHAPES_DICTIONARY[config.MAX_QUESTION_LENGTH])
-        image = misc.imread(self.images_path + image_filename)
         image_size = config.SHAPES_DICTIONARY[config.IMAGE_SIZE]
-        modified_image = misc.imresize(image, (image_size, image_size))
+        modified_image = misc.imread(self.images_path + str(image_size) + '/' + image_filename)
         return (modified_image, encoded_question, answer_label)
 
     def __len__(self):
