@@ -79,6 +79,7 @@ def fit(model, min_epoch_count = 0):
     criterion = nn.CrossEntropyLoss()
     # define the optimizer
     optimizer = optim.Adam(model.parameters(), lr = config.LEARNING_RATE, weight_decay = config.WEIGHT_DECAY)
+    get_hyperparams()
     # train
     return train(model, data_loader, optimizer, criterion, config.EPOCH_COUNT, min_epoch_count = min_epoch_count)
 
@@ -131,10 +132,9 @@ def save_model(model, epoch_index, model_path):
     '''
     Save the pytorch model
     '''
-    state_dict = {}
+    state_dict = get_hyperparams(write_to_file = False)
     state_dict[config.EPOCH_STRING] = epoch_index
-    state_dict[config.MODEL] = model
-
+    state_dict[config.MODEL_STRING] = model
     if not os.path.exists(config.WORKING_DIR + config.MODEL_SAVE_DIRNAME):
         os.makedirs(config.WORKING_DIR + config.MODEL_SAVE_DIRNAME)
     torch.save(state_dict, model_path)
@@ -150,6 +150,28 @@ def get_data(data_mode):
     else:
         data_loader = torch.utils.data.DataLoader(dataset = custom_dataset, batch_size = config.BATCH_SIZE, shuffle = True)
     return data_loader
+
+def get_hyperparams(write_to_file = True):
+    state_dict = {}
+    state_dict[config.LEARNING_RATE_STRING] = config.LEARNING_RATE
+    state_dict[config.BATCH_SIZE_STRING] = config.BATCH_SIZE
+    state_dict[config.WEIGHT_DECAY_STRING] = config.WEIGHT_DECAY
+    state_dict[config.DATASET_STRING] = config.DATALOADER_TYPE
+    state_dict[config.ARCHITECTURE_STRING] = config.MODEL_TYPE
+    dataset_dict = data_loader_factory.get_dataset_dictionary(config.DATALOADER_TYPE)
+    state_dict[config.IMAGE_SIZE] = dataset_dict[config.IMAGE_SIZE]
+    state_dict[config.CHANNEL_COUNT] = dataset_dict[config.CHANNEL_COUNT]
+    if write_to_file == False:
+        return state_dict
+    print('MODEL HYPERPARAMETERS =' + str(state_dict))
+    hyperparam_filepath = config.WORKING_DIR + config.MODEL_SAVE_DIRNAME + '/' + config.HYPERPARAM_FILENAME
+    if os.path.exists(hyperparam_filepath) == False:
+        file_object = open(hyperparam_filepath, 'w+')
+    else:
+        file_object = open(hyperparam_filepath, 'a+')
+    state_dict[config.MODEL_FILENAME_PREFIX_STRING] = config.MODEL_SAVE_FILENAME
+    file_object.writelines(str(state_dict))
+    file_object.close()
 
 
 def main():
