@@ -17,7 +17,7 @@ SHAPES_DATASET_PATH = WORKING_DIR + 'datasets/SHAPES/'
 
 #----------------------------------------------------------------------------------------
 # MODEL PATHS
-MODEL_SAVE_FILENAME = MODEL_TYPE #MODEL_TYPE # Default filename value set to model type specified above
+MODEL_SAVE_FILENAME = MODEL_TYPE # Default filename value set to model type specified above
 MODEL_SAVE_DIRNAME = MODEL_TYPE  # Default folder value set to model type specified above
 MODEL_SAVE_FILEPATH = WORKING_DIR + MODEL_SAVE_DIRNAME + '/' + MODEL_SAVE_FILENAME + '_' # Do not EDIT this variable
 MODEL_LOAD_FILEPATH = '' # Provide the Relative or absolute path to the model that you wish to load for inference or to resume training
@@ -29,7 +29,7 @@ HYPERPARAM_FILENAME = 'hyperparams.txt'
 TRAIN_MODE = True
 USE_GPU = True
 DISPLAY_LOSS_EVERY = 20
-DISPLAY_METRICS_EVERY = 1
+DISPLAY_METRICS_EVERY = 5
 #-----------------------------------------------------------------------------------------
 # TRAINING HYPERPARAMETERS
 CHECKPOINT_FREQUENCY = 1
