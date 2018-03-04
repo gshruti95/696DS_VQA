@@ -166,6 +166,8 @@ def get_hyperparams(write_to_file = True):
     print('MODEL HYPERPARAMETERS =' + str(state_dict))
     hyperparam_filepath = config.WORKING_DIR + config.MODEL_SAVE_DIRNAME + '/' + config.HYPERPARAM_FILENAME
     if os.path.exists(hyperparam_filepath) == False:
+        if os.path.exists(config.WORKING_DIR + config.MODEL_SAVE_DIRNAME) == False:
+            os.mkdir(config.WORKING_DIR + config.MODEL_SAVE_DIRNAME)
         file_object = open(hyperparam_filepath, 'w+')
     else:
         file_object = open(hyperparam_filepath, 'a+')
