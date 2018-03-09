@@ -124,7 +124,7 @@ def load_model(model_path):
     Load model from the specified path
     '''
     state_dict = torch.load(model_path)
-    model = state_dict[config.MODEL]
+    model = state_dict[config.MODEL_STRING]
     return model, state_dict[config.EPOCH_STRING] + 1
 
 
@@ -182,12 +182,8 @@ def main():
     if config.TRAIN_MODE == True:
         model = net_factory.get_network(config.MODEL_TYPE)
         if len(config.MODEL_LOAD_FILEPATH) > 0:
-            try:
-                model, min_epoch_count = load_model(config.MODEL_LOAD_FILEPATH)
-                model = fit(model, min_epoch_count)
-            except:
-                print('Invalid path provided for loading the model')
-                return
+            model, min_epoch_count = load_model(config.MODEL_LOAD_FILEPATH)
+            model = fit(model, min_epoch_count)
         else:
             model = fit(model)
     # set the model in evaluation mode
