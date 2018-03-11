@@ -68,6 +68,8 @@ def train(model, data_loader, optimizer, criterion, epoch_count, min_epoch_count
         if (epoch_index + 1) % config.CHECKPOINT_FREQUENCY == 0:
             model_path = config.MODEL_SAVE_FILEPATH + str(epoch_index + 1) + config.PYTORCH_FILE_EXTENSION
             save_model(model, epoch_index, model_path)
+        
+        sys.stdout.flush()
         print('Time taken to train epoch =' + str(time.time() - start_time))
     
     return model
