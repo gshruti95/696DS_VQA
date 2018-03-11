@@ -7,7 +7,7 @@ from enums import DataLoaderType, ModelType, DataMode
 
 #---------------------------------------------------------------------------------
 DATALOADER_TYPE = DataLoaderType.SHAPES
-MODEL_TYPE = ModelType.BASELINE
+MODEL_TYPE = ModelType.RELATION_NETWORK
 #-----------------------------------------------------------------------------------
 # Dataset Paths
 WORKING_DIR = '../' # This is the path to vqa directory which contains datasets and VQA repository
@@ -36,7 +36,7 @@ CHECKPOINT_FREQUENCY = 1
 BATCH_SIZE = 100
 LEARNING_RATE = 1e-4
 WEIGHT_DECAY = 0
-EPOCH_COUNT = 10
+EPOCH_COUNT = 20
 #------------------------------------------------------------------------------------------
 # KEYWORDS
 IMAGES = 'images'
@@ -59,11 +59,26 @@ WEIGHT_DECAY_STRING = 'WEIGHT_DECAY'
 DATASET_STRING = 'DATASET'
 ARCHITECTURE_STRING = 'ARCHITECTURE'
 MODEL_FILENAME_PREFIX_STRING = 'MODEL_FILENAME_PREFIX'
+QUESTION_EMBEDDING_SIZE = 'QUESTION_EMBEDDING_SIZE'
+ENABLE_BATCHNORM = 'ENABLE_BATCHNORM'
+LSTM_INPUT_EMBEDDING_DIM = 'LSTM_INPUT_EMBEDDING_DIM'
+LSTM_HIDDEN_DIM = 'LSTM_HIDDEN_DIM'
+LSTM_LAYERS = 'LSTM_LAYERS'
+F_LAYER_DIM = 'F layer dimension in RN'
+G_LAYER_DIM = 'G layer dimension in RN'
 #-------------------------------------------------------------------------------------------
 # Dataset Dictionaries
 CLEVR_DICTIONARY = {IMAGE_SIZE : 30, QUESTION_VOCAB_SIZE : 81, ANSWER_VOCAB_SIZE : 28, MAX_QUESTION_LENGTH : 44, CHANNEL_COUNT : 3}
 CLEVR_QUESTION_FILES = {DataMode.TRAIN : 'clevr_train.json', DataMode.TEST : 'clevr_test.json', DataMode.VAL : 'clevr_val.json'}
 FIGUREQA_DICTIONARY = {IMAGE_SIZE : 30, QUESTION_VOCAB_SIZE : 85, ANSWER_VOCAB_SIZE : 2, MAX_QUESTION_LENGTH : 12, CHANNEL_COUNT : 3}
 FIGUREQA_QUESTION_FILES = {DataMode.TRAIN : 'FigureQA_train.json', DataMode.TEST : 'FigureQA_test.json', DataMode.VAL : 'FigureQA_val.json'}
-SHAPES_DICTIONARY = {IMAGE_SIZE : 30, QUESTION_VOCAB_SIZE : 15, ANSWER_VOCAB_SIZE : 2, MAX_QUESTION_LENGTH : 12, CHANNEL_COUNT : 3}
+SHAPES_DICTIONARY = {IMAGE_SIZE : 64, QUESTION_VOCAB_SIZE : 15, ANSWER_VOCAB_SIZE : 2, MAX_QUESTION_LENGTH : 12, CHANNEL_COUNT : 3}
 SHAPES_QUESTION_FILES = {DataMode.TRAIN : 'shapes_train.json', DataMode.TEST : 'shapes_test.json', DataMode.VAL : 'shapes_val.json'}
+
+#--------------------------------------------------------------------------------------------------------
+
+# Architecture Dictionaries
+RELATION_NETWORK_DICTIONARY = {
+                                QUESTION_EMBEDDING_SIZE : 256, ENABLE_BATCHNORM : False, LSTM_HIDDEN_DIM : 256, LSTM_LAYERS : 1,
+                                F_LAYER_DIM : 256, G_LAYER_DIM : 256
+                            }
