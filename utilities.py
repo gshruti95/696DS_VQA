@@ -135,4 +135,4 @@ def get_confusion_matrix(predicted_array, true_array):
         true_class = true_array[index]
         predicted_class = predicted_array[index]
         temp_confusion_matrix[true_class, predicted_class] += 1
-return temp_confusion_matrix
+    return temp_confusion_matrix
