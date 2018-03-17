@@ -100,9 +100,7 @@ class Classifier(nn.Module):
         return out
 
 class FiLM(nn.Module):
-    def __init__(self, dataset_dictionary, n_cnn=4, n_resblock=4, conv_hidden=128, embed_hidden=200, gru_hidden=4096, mlp_hidden=256, classes=29):
-   # def __init__(self, n_vocab, n_cnn=4, n_resblock=4, conv_hidden=128, embed_hidden=200,
-   #              gru_hidden=4096, mlp_hidden=256, classes=29):
+    def __init__(self, dataset_dictionary, n_cnn=4, n_resblock=4, conv_hidden=128, embed_hidden=200, gru_hidden=4096):
        	super(FiLM, self).__init__()
         self.num_question_word = dataset_dictionary[config.QUESTION_VOCAB_SIZE]
         n_vocab = self.num_question_word
