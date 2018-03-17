@@ -8,6 +8,34 @@ import config
 import numpy as np
 import json
 from data_loaders import data_loader_factory
+from scipy import misc
+from enums import DataMode
+
+
+def perform_dataset_preprocessing():
+    data_modes = [DataMode.TRAIN, DataMode.VAL, DataMode.TEST]
+    
+    for mode in data_modes:
+        dataset_path = data_loader_factory.get_dataset_path(config.DATALOADER_TYPE) + config.IMAGES + '/' + mode + '/'
+        if os.path.exists(dataset_path) == False:
+            Exception('Dataset path does not exist')
+        image_files = os.listdir(dataset_path)
+        dataset_dict = data_loader_factory.get_dataset_dictionary(config.DATALOADER_TYPE)
+        image_size = dataset_dict[config.IMAGE_SIZE]
+        # Check if a particular folder exists for the desired size
+        temp_dataset_path = dataset_path + str(image_size) + '/'
+        # If the desired folder exists, avoiding repeated pre-processing
+        if os.path.exists(temp_dataset_path) == True:
+            return
+        # Perform preprocessing
+        os.mkdir(temp_dataset_path)
+        for filename in image_files:
+            filepath = dataset_path + filename
+            if os.path.isdir(filepath) == True:
+                continue
+            image = misc.imread(filepath)
+            modified_image = misc.imresize(image, (image_size, image_size))
+            misc.imsave(temp_dataset_path + filename, modified_image)
 
 
 def get_vocabulary(json_filepath):

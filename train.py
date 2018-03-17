@@ -23,20 +23,29 @@ from architectures import net_factory
 from data_loaders import data_loader_factory
 from enums import DataMode
 
+import time
+
 
 def check_and_get_gpu_instance(item):
     if torch.cuda.is_available() == True and config.USE_GPU == True:
         return item.cuda()
     return item
 
-def train(model, data_loader, optimizer, criterion, epoch_count):
+def train(model, data_loader, optimizer, criterion, epoch_count, min_epoch_count = 0):
     # train the model for fixed number of epochs
     model = check_and_get_gpu_instance(model)
-    for epoch_index in xrange(epoch_count):
+    for epoch_index in range(min_epoch_count, epoch_count):
+        start_time = time.time()
         for mini_index, (images, questions, labels) in enumerate(data_loader):
             # convert the images, questions and the labels to variables and then to cuda instances
             images = Variable(images, requires_grad = False)
             questions = Variable(torch.stack(questions, dim = 1), requires_grad = False)
+            
+            # Reducing the question length for avoiding no-op recurrent time steps in processing question through RNN
+            numpy_questions = questions.data.numpy()
+            max_question_length = max([np.argmax(numpy_questions[i, :]) for i in xrange(numpy_questions.shape[0])]) + 1
+            questions = questions[:, 0 : max_question_length]
+            
             labels = Variable(labels, requires_grad = False)
             images = check_and_get_gpu_instance(images.float())
             questions = check_and_get_gpu_instance(questions)
@@ -44,7 +53,7 @@ def train(model, data_loader, optimizer, criterion, epoch_count):
             # forward, backward, step
             model.zero_grad()
             images = images.permute(0, 3, 1, 2)
-            #print(images)
+            
             predictions = model(images, questions)
             loss = criterion(predictions , target_labels)
             if mini_index % config.DISPLAY_LOSS_EVERY == 0:
@@ -57,21 +66,24 @@ def train(model, data_loader, optimizer, criterion, epoch_count):
             predict(model, config.DataMode.VAL)
         
         if (epoch_index + 1) % config.CHECKPOINT_FREQUENCY == 0:
-            model_path = config.MODEL_SAVE_FILEPATH + config.MODEL_SAVE_FILENAME + str(epoch_index + 1) + config.PYTORCH_FILE_EXTENSION
-            save_model(model, model_path)
+            model_path = config.MODEL_SAVE_FILEPATH + str(epoch_index + 1) + config.PYTORCH_FILE_EXTENSION
+            save_model(model, epoch_index, model_path)
+        
+        sys.stdout.flush()
+        print('Time taken to train epoch =' + str(time.time() - start_time))
     
     return model
 
-def fit(model):
+def fit(model, min_epoch_count = 0):
     # get the data loader iterator
     data_loader = get_data(DataMode.TRAIN)
     # define the objective
     criterion = nn.CrossEntropyLoss()
     # define the optimizer
     optimizer = optim.Adam(model.parameters(), lr = config.LEARNING_RATE, weight_decay = config.WEIGHT_DECAY)
+    get_hyperparams()
     # train
-    return train(model, data_loader, optimizer, criterion, config.EPOCH_COUNT)
-
+    return train(model, data_loader, optimizer, criterion, config.EPOCH_COUNT, min_epoch_count = min_epoch_count)
 
 def predict(model, data_mode, print_values = False):
     print('Computing metrics for ' + data_mode + ' mode.')
@@ -113,15 +125,21 @@ def load_model(model_path):
     '''
     Load model from the specified path
     '''
-    model = torch.load(model_path)
-    return model
+    state_dict = torch.load(model_path)
+    model = state_dict[config.MODEL_STRING]
+    return model, state_dict[config.EPOCH_STRING] + 1
 
 
-def save_model(model, model_path):
+def save_model(model, epoch_index, model_path):
     '''
     Save the pytorch model
     '''
-    torch.save(model, model_path)
+    state_dict = get_hyperparams(write_to_file = False)
+    state_dict[config.EPOCH_STRING] = epoch_index
+    state_dict[config.MODEL_STRING] = model
+    if not os.path.exists(config.WORKING_DIR + config.MODEL_SAVE_DIRNAME):
+        os.makedirs(config.WORKING_DIR + config.MODEL_SAVE_DIRNAME)
+    torch.save(state_dict, model_path)
 
 
 def get_data(data_mode):
@@ -135,18 +153,50 @@ def get_data(data_mode):
         data_loader = torch.utils.data.DataLoader(dataset = custom_dataset, batch_size = config.BATCH_SIZE, shuffle = True)
     return data_loader
 
+def get_hyperparams(write_to_file = True):
+    state_dict = {}
+    state_dict[config.LEARNING_RATE_STRING] = config.LEARNING_RATE
+    state_dict[config.BATCH_SIZE_STRING] = config.BATCH_SIZE
+    state_dict[config.WEIGHT_DECAY_STRING] = config.WEIGHT_DECAY
+    state_dict[config.DATASET_STRING] = config.DATALOADER_TYPE
+    state_dict[config.ARCHITECTURE_STRING] = config.MODEL_TYPE
+    dataset_dict = data_loader_factory.get_dataset_dictionary(config.DATALOADER_TYPE)
+    state_dict[config.IMAGE_SIZE] = dataset_dict[config.IMAGE_SIZE]
+    state_dict[config.CHANNEL_COUNT] = dataset_dict[config.CHANNEL_COUNT]
+    if write_to_file == False:
+        return state_dict
+    print('MODEL HYPERPARAMETERS =' + str(state_dict))
+    hyperparam_filepath = config.WORKING_DIR + config.MODEL_SAVE_DIRNAME + '/' + config.HYPERPARAM_FILENAME
+    if os.path.exists(hyperparam_filepath) == False:
+        if os.path.exists(config.WORKING_DIR + config.MODEL_SAVE_DIRNAME) == False:
+            os.mkdir(config.WORKING_DIR + config.MODEL_SAVE_DIRNAME)
+        file_object = open(hyperparam_filepath, 'w+')
+    else:
+        file_object = open(hyperparam_filepath, 'a+')
+    state_dict[config.MODEL_FILENAME_PREFIX_STRING] = config.MODEL_SAVE_FILENAME
+    file_object.writelines(str(state_dict))
+    file_object.close()
+
 
 def main():
+    utilities.perform_dataset_preprocessing()
     model = None
     if config.TRAIN_MODE == True:
         model = net_factory.get_network(config.MODEL_TYPE)
-        model = fit(model)
-        save_model(model, config.MODEL_SAVE_FILEPATH)
+        if len(config.MODEL_LOAD_FILEPATH) > 0:
+            model, min_epoch_count = load_model(config.MODEL_LOAD_FILEPATH)
+            model = fit(model, min_epoch_count)
+        else:
+            model = fit(model)
     # set the model in evaluation mode
     else:
-        model = load_model(config.MODEL_LOAD_FILEPATH)    
+        try:
+            model, _ = load_model(config.MODEL_LOAD_FILEPATH)
+        except:
+            print('Provide appropriate model path and rerun for inference')
+            return    
     # perform prediction
-    predict(model, DataMode.TEST, print_values = True)
+	predict(model, DataMode.TEST, print_values = True)
 
 
 if __name__ == '__main__':

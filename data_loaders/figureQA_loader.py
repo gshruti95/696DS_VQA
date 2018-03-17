@@ -35,10 +35,9 @@ class FigureQADataset(data.Dataset):
         
         image_filename = question_item[config.IMAGE_FILENAME_KEY]
         encoded_question = utilities.encode_question(question, self.question_vocab, config.FIGUREQA_DICTIONARY[config.MAX_QUESTION_LENGTH])
-        image = misc.imread(self.images_path + image_filename)
-        image = image[:, :, 0 : config.FIGUREQA_DICTIONARY[config.CHANNEL_COUNT]]
         image_size = config.FIGUREQA_DICTIONARY[config.IMAGE_SIZE]
-        modified_image = misc.imresize(image, (image_size, image_size))
+        image = misc.imread(self.images_path + str(image_size) + '/' + image_filename)
+        modified_image = image[:, :, 0 : config.FIGUREQA_DICTIONARY[config.CHANNEL_COUNT]]
         return (modified_image, encoded_question, answer_label)
 
     def __len__(self):
