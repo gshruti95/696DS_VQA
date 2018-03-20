@@ -4,9 +4,9 @@ import torch.nn.functional as F
 from torch.autograd import Variable
 import config
 
-class RelNetGroupAttentionStandard(nn.Module):
+class RelNetGroupAttentionAlternate(nn.Module):
     def __init__(self, dataset_dictionary, architecture_dictionary):
-        super(RelNetGroupAttentionStandard, self).__init__()
+        super(RelNetGroupAttentionAlternate, self).__init__()
         act_f = nn.ReLU()
 
         self.group_size = architecture_dictionary[config.ATTENTION_GROUP_SIZE]
@@ -45,7 +45,7 @@ class RelNetGroupAttentionStandard(nn.Module):
         )
         img_net_out_dim = img_net_dim # since no pooling operation is performed
 
-        self.attention_layer = nn.Linear(ques_dim + img_net_out_dim, 1)
+        self.attention_layer = nn.Linear(ques_dim + (img_net_out_dim * self.group_size), self.group_size)
         
         g_in_dim = 2 * (img_net_out_dim) + ques_dim # 2 * (img_net_out_dim + 2) + ques_dim
         #print(g_in_dim)
@@ -114,27 +114,24 @@ class RelNetGroupAttentionStandard(nn.Module):
         # permute the cells in the order (N, objects count, embedding)
         # permute the question in the order (N, objects count, embedding)
         modified_cells = cells.permute(0, 2, 1)
-        modified_three = three.permute(0, 2, 1)
         #print(modified_cells.size())
-        combined_features = torch.cat([modified_cells, modified_three], dim = 2) # concat across the embedding
-        # pass the combined embedding through the attention layers
-        feature_scores = self.attention_layer(combined_features)
-        # reshape the features to the form (N, 16)
-        feature_scores = feature_scores.view(N, -1)
-        # perform groupwise softmax and weighted attention
         modified_n_objects = n_objects / self.group_size # select group size to divide the object count perfectly
         compressed_cells = Variable(torch.zeros(modified_cells.size()[0], modified_n_objects, modified_cells.size()[2]))
         if modified_cells.is_cuda:
             compressed_cells = compressed_cells.cuda()
         j = 0
         while j < modified_n_objects:
-            temp_scores = feature_scores[:, j * self.group_size : (j + 1) * self.group_size] #(N, group_size)
-            temp_features = modified_cells[:, j * self.group_size : (j + 1) * self.group_size, :] #(N, group_size, embedding dimension)
+            group_features = modified_cells[:, j * self.group_size : (j + 1) * self.group_size, :] # obtain the group size number of features
+            # concat all the group features along with the question embedding
+            concat_group_features = group_features.contiguous().view(N, -1) # reshape the group features
+            concat_group_features = torch.cat([concat_group_features, ques], dim = 1)
+            # run through the attention_layer to obtain the temp scores
+            temp_scores = self.attention_layer(concat_group_features) #(N, group_size)
             # apply softmax on the temp_scores to perform normalizarion
             normalized_temp_scores = F.softmax(temp_scores)
             normalized_temp_scores = normalized_temp_scores.unsqueeze(2).repeat(1, 1, modified_cells.size()[2])
             # apply the scalar weight on each of the features
-            compressed_cells[:, j, :] = torch.sum(normalized_temp_scores * temp_features, dim = 1)
+            compressed_cells[:, j, :] = torch.sum(normalized_temp_scores * group_features, dim = 1)
             j = j + 1
         # change the order of the objects
         cells = compressed_cells.permute(0, 2, 1)

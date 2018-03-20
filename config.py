@@ -7,7 +7,7 @@ from enums import DataLoaderType, ModelType, DataMode
 
 #---------------------------------------------------------------------------------
 DATALOADER_TYPE = DataLoaderType.SHAPES
-MODEL_TYPE = ModelType.RELATION_GROUP_ATTENTION
+MODEL_TYPE = ModelType.RELATION_GROUP_ATTENTION_ALTERNATE
 #-----------------------------------------------------------------------------------
 # Dataset Paths
 WORKING_DIR = '../' # This is the path to vqa directory which contains datasets and VQA repository

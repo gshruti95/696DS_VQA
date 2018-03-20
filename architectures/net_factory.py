@@ -4,7 +4,8 @@ This file contains the factory definitons for fetching the appropriate network f
 from enums import ModelType
 from baseline import BaselineModel
 from rn import RelNet
-from rn_group_attention import RelNetGroupAttention
+from rn_group_attention import RelNetGroupAttentionStandard
+from rn_group_attention2 import RelNetGroupAttentionAlternate
 from data_loaders import data_loader_factory
 import config
 
@@ -23,5 +24,7 @@ def get_network(network_type):
         pass
     elif network_type == ModelType.MEMORY_NETWORK:
         pass
-    elif network_type == ModelType.RELATION_GROUP_ATTENTION:
-        return RelNetGroupAttention(dataset_dict, config.RELATION_GROUP_ATTENTION_NETWORK_DICTIONARY)
+    elif network_type == ModelType.RELATION_GROUP_ATTENTION_STANDARD:
+        return RelNetGroupAttentionStandard(dataset_dict, config.RELATION_GROUP_ATTENTION_NETWORK_DICTIONARY)
+    elif network_type == ModelType.RELATION_GROUP_ATTENTION_ALTERNATE:
+        return RelNetGroupAttentionAlternate(dataset_dict, config.RELATION_GROUP_ATTENTION_NETWORK_DICTIONARY)
