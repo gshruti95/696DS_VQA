@@ -25,5 +25,6 @@ class ModelType(enumerate):
     BASELINE = 'BASELINE'
     FILM = 'FiLM'
     RELATION_NETWORK = 'RELATION_NETWORK'
+    RELATION_NETWORK_CONDITIONAL_BATCH_NORM = 'RELATION NETWORK with conditional batch norm on the input features for last layer'
     STACKED_CO_ATTENTION = 'STACKED_CO_ATTENTION'
     MEMORY_NETWORK = 'MEMORY_NETWORK'

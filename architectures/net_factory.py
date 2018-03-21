@@ -6,6 +6,7 @@ from baseline import BaselineModel
 from rn import RelNet
 from data_loaders import data_loader_factory
 import config
+from rn_batch_norm import RelNetConditionalBatchNorm
 
 def get_network(network_type):
     '''
@@ -16,6 +17,8 @@ def get_network(network_type):
         return BaselineModel(dataset_dict)
     elif network_type == ModelType.RELATION_NETWORK:
         return RelNet(dataset_dict, config.RELATION_NETWORK_DICTIONARY)
+    elif network_type == ModelType.RELATION_NETWORK_CONDITIONAL_BATCH_NORM:
+        return RelNetConditionalBatchNorm(dataset_dict, config.RELATION_NETWORK_DICTIONARY)
     elif network_type == ModelType.FILM:
         pass
     elif network_type == ModelType.STACKED_CO_ATTENTION:
