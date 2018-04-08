@@ -16,6 +16,7 @@ class DataLoaderType(enumerate):
     CLEVR = 'CLEVR'
     FIGUREQA = 'FigureQA'
     SHAPES = 'SHAPES'
+    SORT_OF_CLEVR = 'SORT OF CLEVR'
 
 '''
 ModelType define the architecture type.

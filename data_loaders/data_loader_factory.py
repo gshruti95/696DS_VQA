@@ -5,6 +5,7 @@ from enums import DataLoaderType, DataMode
 from clevr_loader import CLEVRDataset
 from figureQA_loader import FigureQADataset
 from shapes_loader import ShapesDataset
+from sortofclevr_loader import SortOfClevrDataset
 import config
 import utilities
 import numpy as np
@@ -13,6 +14,9 @@ def get_data_loader(data_loader_type, data_mode):
     '''
     Based on the data_loader type, return the data loader
     '''
+    if data_loader_type == DataLoaderType.SORT_OF_CLEVR:
+        return SortOfClevrDataset(data_mode)
+
     question_vocab, answer_vocab = get_dataset_vocab(data_loader_type)
     if data_loader_type == DataLoaderType.CLEVR:
         return CLEVRDataset(data_mode, question_vocab, answer_vocab)
@@ -20,7 +24,7 @@ def get_data_loader(data_loader_type, data_mode):
         return FigureQADataset(data_mode, question_vocab, answer_vocab)
     elif data_loader_type == DataLoaderType.SHAPES:
         return ShapesDataset(data_mode, question_vocab, answer_vocab)
-
+    
 
 def get_dataset_vocab(data_loader_type):
     question_json_file = ''
@@ -41,6 +45,8 @@ def get_dataset_dictionary(data_loader_type):
         return config.FIGUREQA_DICTIONARY
     elif data_loader_type == DataLoaderType.SHAPES:
         return config.SHAPES_DICTIONARY
+    elif data_loader_type == DataLoaderType.SORT_OF_CLEVR:
+        return config.SORT_OF_CLEVR_DICTIONARY
 
 
 def get_dataset_specific_confusion_matrix(data_loader_type):
@@ -51,6 +57,10 @@ def get_dataset_specific_confusion_matrix(data_loader_type):
         class_count = config.FIGUREQA_DICTIONARY[config.ANSWER_VOCAB_SIZE]
     elif data_loader_type == DataLoaderType.SHAPES:
         class_count = config.SHAPES_DICTIONARY[config.ANSWER_VOCAB_SIZE]
+    elif data_loader_type == DataLoaderType.SORT_OF_CLEVR:
+        class_count = config.SORT_OF_CLEVR_DICTIONARY[config.NOREL_ANSWER_VOCAB_SIZE]
+        if config.SORT_OF_CLEVR_DICTIONARY[config.ANSWER_MODE] == 'REL':
+            class_count = config.SORT_OF_CLEVR_DICTIONARY[config.REL_ANSWER_VOCAB_SIZE]
 
     return np.zeros((class_count, class_count))
 
@@ -61,6 +71,8 @@ def get_dataset_path(data_loader_type):
         return config.FIGUREQA_DATASET_PATH
     elif data_loader_type == DataLoaderType.SHAPES:
         return config.SHAPES_DATASET_PATH
+    elif data_loader_type == DataLoaderType.SORT_OF_CLEVR:
+        return config.SORT_OF_CLEVR_DATASET_PATH
 
 
 

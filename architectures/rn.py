@@ -8,20 +8,18 @@ class RelNet(nn.Module):
     def __init__(self, dataset_dictionary, architecture_dictionary):
         super(RelNet, self).__init__()
         act_f = nn.ReLU()
-        self.question_vocab_size = dataset_dictionary[config.QUESTION_VOCAB_SIZE]
-        self.answer_vocab_size = dataset_dictionary[config.ANSWER_VOCAB_SIZE]
-        self.question_embedding_size = architecture_dictionary[config.QUESTION_EMBEDDING_SIZE]
-        self.qlstm_hidden_dim = architecture_dictionary[config.LSTM_HIDDEN_DIM]
-        qlstm_num_layers = architecture_dictionary[config.LSTM_LAYERS]
-
+        self.answer_vocab_size = dataset_dictionary[config.NOREL_ANSWER_VOCAB_SIZE]
+        if dataset_dictionary[config.ANSWER_MODE] == 'REL':
+            self.answer_vocab_size = dataset_dictionary[config.REL_ANSWER_VOCAB_SIZE]
+        #self.question_embedding_size = dataset_dictionary[config.QUESTION_EMBEDDING_SIZE]
         # construct question embedding
-        self.qembedding = nn.Embedding(self.question_vocab_size,
-                                       self.question_embedding_size)
-        self.qlstm = nn.LSTM(self.question_embedding_size,
-                             self.qlstm_hidden_dim,
-                             qlstm_num_layers,
-                             dropout=0)
-        ques_dim = self.qlstm_hidden_dim
+        #self.qembedding = nn.Embedding(self.question_vocab_size,
+        #                               self.question_embedding_size)
+        #self.qlstm = nn.LSTM(self.question_embedding_size,
+        #                     self.qlstm_hidden_dim,
+        #                     qlstm_num_layers,
+        #                     dropout=0)
+        ques_dim = dataset_dictionary[config.QUESTION_EMBEDDING_SIZE]
         # construct image embeddings
         img_net_dim = dataset_dictionary[config.IMAGE_SIZE]
         self.img_net = nn.Sequential(
@@ -141,10 +139,10 @@ class RelNet(nn.Module):
     def forward(self, img, ques):
         img = self.img_net(img)
         #print(img.size())
-        ques_embedding = self.qembedding(ques)
-        embeddings = ques_embedding.permute(1, 0, 2)
-        _, (question_features, _) = self.qlstm(embeddings)
-        ques = question_features.view(-1, self.qlstm_hidden_dim)
+        #ques_embedding = self.qembedding(ques)
+        #embeddings = ques_embedding.permute(1, 0, 2)
+        #_, (question_features, _) = self.qlstm(embeddings)
+        #ques = question_features.view(-1, self.qlstm_hidden_dim)
         # RN implementation treating pixels as objects
         # (f and g as in the RN paper)
         context = 0
@@ -154,4 +152,4 @@ class RelNet(nn.Module):
         context = self.g(pairs.view(N*N_pairs, -1))
         context = context.view(N, N_pairs, -1).mean(dim=1)
         scores = self.f(context)
-        return scores #F.log_softmax(scores, dim=1)
+        return scores
