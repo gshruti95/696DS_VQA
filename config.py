@@ -30,14 +30,14 @@ HYPERPARAM_FILENAME = 'hyperparams.txt'
 TRAIN_MODE = True
 USE_GPU = True
 DISPLAY_LOSS_EVERY = 20
-DISPLAY_METRICS_EVERY = 5
+DISPLAY_METRICS_EVERY = 1
 #-----------------------------------------------------------------------------------------
 # TRAINING HYPERPARAMETERS
-CHECKPOINT_FREQUENCY = 1
+CHECKPOINT_FREQUENCY = 20
 BATCH_SIZE = 64
 LEARNING_RATE = 1e-4
 WEIGHT_DECAY = 0
-EPOCH_COUNT = 50
+EPOCH_COUNT = 20
 #------------------------------------------------------------------------------------------
 # KEYWORDS
 IMAGES = 'images'
@@ -78,7 +78,7 @@ FIGUREQA_DICTIONARY = {IMAGE_SIZE : 30, QUESTION_VOCAB_SIZE : 85, ANSWER_VOCAB_S
 FIGUREQA_QUESTION_FILES = {DataMode.TRAIN : 'FigureQA_train.json', DataMode.TEST : 'FigureQA_test.json', DataMode.VAL : 'FigureQA_val.json'}
 SHAPES_DICTIONARY = {IMAGE_SIZE : 64, QUESTION_VOCAB_SIZE : 15, ANSWER_VOCAB_SIZE : 2, MAX_QUESTION_LENGTH : 12, CHANNEL_COUNT : 3}
 SHAPES_QUESTION_FILES = {DataMode.TRAIN : 'shapes_train.json', DataMode.TEST : 'shapes_test.json', DataMode.VAL : 'shapes_val.json'}
-SORT_OF_CLEVR_DICTIONARY = {IMAGE_SIZE : 75, QUESTION_EMBEDDING_SIZE : 11, REL_ANSWER_VOCAB_SIZE : 10, NOREL_ANSWER_VOCAB_SIZE : 4, CHANNEL_COUNT : 3, ANSWER_MODE : 'NOREL'}
+SORT_OF_CLEVR_DICTIONARY = {IMAGE_SIZE : 75, QUESTION_EMBEDDING_SIZE : 11, REL_ANSWER_VOCAB_SIZE : 10, NOREL_ANSWER_VOCAB_SIZE : 4, CHANNEL_COUNT : 3}
 SORT_OF_CLEVR_QUESTION_FILES = {DataMode.TRAIN : 'sort_of_clevr_train.json', DataMode.TEST : 'sort_of_clevr_test.json', DataMode.VAL : 'sort_of_clevr_val.json'}
 
 #--------------------------------------------------------------------------------------------------------
