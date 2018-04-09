@@ -46,6 +46,8 @@ def train(model, data_loader, optimizer, criterion, epoch_count, min_epoch_count
             images = check_and_get_gpu_instance(images.float())
             questions = check_and_get_gpu_instance(questions)
             target_labels = check_and_get_gpu_instance(labels)
+            if images.size()[0] != config.BATCH_SIZE:
+                continue
             # forward, backward, step
             model.zero_grad()
             images = images.permute(0, 3, 1, 2)
@@ -87,6 +89,8 @@ def predict(model, data_mode, print_values = False):
     confusion_matrix = data_loader_factory.get_dataset_specific_confusion_matrix(config.DATALOADER_TYPE) #(True class, predicted class)
     for _, (images, questions, labels) in enumerate(data_loader):
         images = Variable(images, requires_grad = False)
+        if images.size()[0] != config.BATCH_SIZE:
+            continue
         questions = Variable(torch.stack(questions, dim = 1), requires_grad = False)
         questions = questions.type(torch.FloatTensor)
         labels = Variable(labels, requires_grad = False)
