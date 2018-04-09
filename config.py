@@ -7,7 +7,7 @@ from enums import DataLoaderType, ModelType, DataMode
 
 #---------------------------------------------------------------------------------
 DATALOADER_TYPE = DataLoaderType.SORT_OF_CLEVR
-MODEL_TYPE = ModelType.BASELINE
+MODEL_TYPE = ModelType.RELATION_NETWORK
 #-----------------------------------------------------------------------------------
 # Dataset Paths
 WORKING_DIR = '../' # This is the path to vqa directory which contains datasets and VQA repository
@@ -34,10 +34,10 @@ DISPLAY_METRICS_EVERY = 5
 #-----------------------------------------------------------------------------------------
 # TRAINING HYPERPARAMETERS
 CHECKPOINT_FREQUENCY = 1
-BATCH_SIZE = 25
+BATCH_SIZE = 64
 LEARNING_RATE = 1e-4
 WEIGHT_DECAY = 0
-EPOCH_COUNT = 200
+EPOCH_COUNT = 50
 #------------------------------------------------------------------------------------------
 # KEYWORDS
 IMAGES = 'images'
@@ -78,7 +78,7 @@ FIGUREQA_DICTIONARY = {IMAGE_SIZE : 30, QUESTION_VOCAB_SIZE : 85, ANSWER_VOCAB_S
 FIGUREQA_QUESTION_FILES = {DataMode.TRAIN : 'FigureQA_train.json', DataMode.TEST : 'FigureQA_test.json', DataMode.VAL : 'FigureQA_val.json'}
 SHAPES_DICTIONARY = {IMAGE_SIZE : 64, QUESTION_VOCAB_SIZE : 15, ANSWER_VOCAB_SIZE : 2, MAX_QUESTION_LENGTH : 12, CHANNEL_COUNT : 3}
 SHAPES_QUESTION_FILES = {DataMode.TRAIN : 'shapes_train.json', DataMode.TEST : 'shapes_test.json', DataMode.VAL : 'shapes_val.json'}
-SORT_OF_CLEVR_DICTIONARY = {IMAGE_SIZE : 32, QUESTION_EMBEDDING_SIZE : 11, REL_ANSWER_VOCAB_SIZE : 10, NOREL_ANSWER_VOCAB_SIZE : 4, CHANNEL_COUNT : 3, ANSWER_MODE : 'NOREL'}
+SORT_OF_CLEVR_DICTIONARY = {IMAGE_SIZE : 75, QUESTION_EMBEDDING_SIZE : 11, REL_ANSWER_VOCAB_SIZE : 10, NOREL_ANSWER_VOCAB_SIZE : 4, CHANNEL_COUNT : 3, ANSWER_MODE : 'NOREL'}
 SORT_OF_CLEVR_QUESTION_FILES = {DataMode.TRAIN : 'sort_of_clevr_train.json', DataMode.TEST : 'sort_of_clevr_test.json', DataMode.VAL : 'sort_of_clevr_val.json'}
 
 #--------------------------------------------------------------------------------------------------------
