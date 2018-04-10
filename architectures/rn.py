@@ -5,6 +5,7 @@ import torch.nn.functional as F
 import torch.optim as optim
 from torch.autograd import Variable
 import config
+from scipy import misc
 
 
 class ConvInputModel(nn.Module):
@@ -124,7 +125,14 @@ class RelNet(nn.Module):
 
 
     def forward(self, img, qst):
+        qst = torch.transpose(qst, 1, 0)
+        #np.set_printoptions(threshold=np.nan)
+        #temp = img.data[0].numpy()
+        #misc.imshow(temp)
+        #print(img.size())
+        #print(qst.size())
         x = self.conv(img) ## x = (64 x 24 x 5 x 5)
+        
         
         """g"""
         mb = x.size()[0]

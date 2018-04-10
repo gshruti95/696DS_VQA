@@ -7,6 +7,9 @@ from scipy import misc
 import config
 import utilities
 import json
+from enums import DataMode
+import pickle
+import numpy as np
 
 class SortOfClevrDataset(data.Dataset):
     '''
@@ -16,6 +19,30 @@ class SortOfClevrDataset(data.Dataset):
         # need to load the question vocabulary
         # obtain the question filepath and load the json file
         # get the questions and the answers
+        dirs = config.SORT_OF_CLEVR_DATASET_PATH
+        filename = os.path.join(dirs,'sort-of-clevr.pickle')
+        with open(filename, 'rb') as f:
+            train_datasets, test_datasets = pickle.load(f)
+        self.questions_list = []
+        self.answers_list = []
+        self.img_list = []
+        #print('processing data...')
+        if data_mode == DataMode.TRAIN:
+            dataset = train_datasets
+        else:
+            dataset = test_datasets
+        for img, relations, norelations in dataset:
+            #img = np.swapaxes(img,0,2)
+            for qst,ans in zip(relations[0], relations[1]):
+                self.img_list.append(img)
+                self.questions_list.append(qst)
+                self.answers_list.append(ans)
+            for qst,ans in zip(norelations[0], norelations[1]):
+                self.img_list.append(img)
+                self.questions_list.append(qst)
+                self.answers_list.append(ans)
+
+        '''
         sort_of_clevr_dictionary = config.SORT_OF_CLEVR_DICTIONARY
         self.answer_vocab = sort_of_clevr_dictionary[config.REL_ANSWER_VOCAB_SIZE]
         
@@ -25,9 +52,14 @@ class SortOfClevrDataset(data.Dataset):
         question_json = file(questions_path + question_json_filename).read()
         questions_dictionary = json.loads(question_json)
         self.questions_list, self.answers_list = self.perform_question_preprocessing(questions_dictionary)
+        '''
         
     
     def __getitem__(self, index):
+        #print(self.questions_list[index])
+        #print(self.answers_list[index])
+        return (self.img_list[index], self.questions_list[index], self.answers_list[index])
+        '''
         temp_question = self.questions_list[index]
         temp_question_list = temp_question.replace('[' , '').replace(']' , '').split(' ')
         encoded_question = [float(x) for x in temp_question_list if len(x) > 0]
@@ -35,10 +67,11 @@ class SortOfClevrDataset(data.Dataset):
         image_filename = str(index // 2) + '.jpg'
         image_size = config.SORT_OF_CLEVR_DICTIONARY[config.IMAGE_SIZE]
         modified_image = misc.imread(self.images_path + str(image_size) + '/' + image_filename)
-        return (modified_image / 255., encoded_question, answer_label)
+        return (modified_image, encoded_question, answer_label)
+        '''
 
     def __len__(self):
-        return 200 #len(self.questions_list)
+        return len(self.questions_list)
 
 
     def perform_question_preprocessing(self, questions_dictionary):
