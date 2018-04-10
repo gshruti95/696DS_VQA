@@ -140,7 +140,6 @@ class RelNet(nn.Module):
 
     def forward(self, img, ques):
         img = self.img_net(img)
-        #print(img.size())
         ques_embedding = self.qembedding(ques)
         embeddings = ques_embedding.permute(1, 0, 2)
         _, (question_features, _) = self.qlstm(embeddings)
