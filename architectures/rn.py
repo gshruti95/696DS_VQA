@@ -50,7 +50,7 @@ class FCOutputModel(nn.Module):
         x = F.relu(x)
         x = F.dropout(x)
         x = self.fc3(x)
-        return x #F.log_softmax(x)
+        return F.log_softmax(x)
 
   
 
@@ -124,8 +124,6 @@ class RelNet(nn.Module):
 
 
     def forward(self, img, qst):
-        #print(img.size())
-        #print(qst.size())
         x = self.conv(img) ## x = (64 x 24 x 5 x 5)
         
         """g"""

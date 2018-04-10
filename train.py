@@ -75,7 +75,7 @@ def fit(model, min_epoch_count = 0):
     # get the data loader iterator
     data_loader = get_data(DataMode.TRAIN)
     # define the objective
-    criterion = nn.CrossEntropyLoss()
+    criterion = nn.NLLLoss() #nn.CrossEntropyLoss()
     # define the optimizer
     optimizer = optim.Adam(model.parameters(), lr = config.LEARNING_RATE, weight_decay = config.WEIGHT_DECAY)
     get_hyperparams()

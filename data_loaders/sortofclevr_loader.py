@@ -35,10 +35,10 @@ class SortOfClevrDataset(data.Dataset):
         image_filename = str(index // 2) + '.jpg'
         image_size = config.SORT_OF_CLEVR_DICTIONARY[config.IMAGE_SIZE]
         modified_image = misc.imread(self.images_path + str(image_size) + '/' + image_filename)
-        return (modified_image, encoded_question, answer_label)
+        return (modified_image / 255., encoded_question, answer_label)
 
     def __len__(self):
-        return len(self.questions_list)
+        return 200 #len(self.questions_list)
 
 
     def perform_question_preprocessing(self, questions_dictionary):
