@@ -50,7 +50,7 @@ class FCOutputModel(nn.Module):
         x = F.relu(x)
         x = F.dropout(x)
         x = self.fc3(x)
-        return x #F.log_softmax(x)
+        return F.log_softmax(x)
 
   
 

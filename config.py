@@ -29,7 +29,7 @@ HYPERPARAM_FILENAME = 'hyperparams.txt'
 TRAIN_MODE = True
 USE_GPU = True
 DISPLAY_LOSS_EVERY = 20
-DISPLAY_METRICS_EVERY = 5
+DISPLAY_METRICS_EVERY = 1
 #-----------------------------------------------------------------------------------------
 # TRAINING HYPERPARAMETERS
 CHECKPOINT_FREQUENCY = 50
