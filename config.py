@@ -32,11 +32,11 @@ DISPLAY_LOSS_EVERY = 20
 DISPLAY_METRICS_EVERY = 5
 #-----------------------------------------------------------------------------------------
 # TRAINING HYPERPARAMETERS
-CHECKPOINT_FREQUENCY = 1
+CHECKPOINT_FREQUENCY = 50
 BATCH_SIZE = 100
 LEARNING_RATE = 1e-4
 WEIGHT_DECAY = 0
-EPOCH_COUNT = 20
+EPOCH_COUNT = 50
 #------------------------------------------------------------------------------------------
 # KEYWORDS
 IMAGES = 'images'
@@ -66,6 +66,7 @@ LSTM_HIDDEN_DIM = 'LSTM_HIDDEN_DIM'
 LSTM_LAYERS = 'LSTM_LAYERS'
 F_LAYER_DIM = 'F layer dimension in RN'
 G_LAYER_DIM = 'G layer dimension in RN'
+FILTER_SIZE = 'Filter size'
 #-------------------------------------------------------------------------------------------
 # Dataset Dictionaries
 CLEVR_DICTIONARY = {IMAGE_SIZE : 30, QUESTION_VOCAB_SIZE : 81, ANSWER_VOCAB_SIZE : 28, MAX_QUESTION_LENGTH : 44, CHANNEL_COUNT : 3}
@@ -80,5 +81,5 @@ SHAPES_QUESTION_FILES = {DataMode.TRAIN : 'shapes_train.json', DataMode.TEST : '
 # Architecture Dictionaries
 RELATION_NETWORK_DICTIONARY = {
                                 QUESTION_EMBEDDING_SIZE : 256, ENABLE_BATCHNORM : False, LSTM_HIDDEN_DIM : 256, LSTM_LAYERS : 1,
-                                F_LAYER_DIM : 256, G_LAYER_DIM : 256
+                                F_LAYER_DIM : 256, G_LAYER_DIM : 256, FILTER_SIZE : 24
                             }

@@ -23,12 +23,9 @@ class RelNet(nn.Module):
                              dropout=0)
         ques_dim = self.qlstm_hidden_dim
         # construct image embeddings
-        img_net_dim = dataset_dictionary[config.IMAGE_SIZE]
+        img_net_dim = architecture_dictionary[config.FILTER_SIZE]
         self.img_net = nn.Sequential(
-            nn.Conv2d(3, 64, kernel_size=3, stride=2, padding=1),
-            nn.BatchNorm2d(64),
-            act_f,
-            nn.Conv2d(64, img_net_dim, kernel_size=3, stride=2, padding=1),
+            nn.Conv2d(3, img_net_dim, kernel_size=3, stride=2, padding=1),
             nn.BatchNorm2d(img_net_dim),
             act_f,
             nn.Conv2d(img_net_dim, img_net_dim, kernel_size=3, stride=2, padding=1),
@@ -37,8 +34,11 @@ class RelNet(nn.Module):
             nn.Conv2d(img_net_dim, img_net_dim, kernel_size=3, stride=2, padding=1),
             nn.BatchNorm2d(img_net_dim),
             act_f,
-            nn.Conv2d(img_net_dim, 64, kernel_size=3, stride=2, padding=1),
-            nn.BatchNorm2d(64),
+            nn.Conv2d(img_net_dim, img_net_dim, kernel_size=3, stride=2, padding=1),
+            nn.BatchNorm2d(img_net_dim),
+            act_f,
+            nn.Conv2d(img_net_dim, img_net_dim, kernel_size=3, stride=2, padding=1),
+            nn.BatchNorm2d(img_net_dim),
             act_f,
         )
         img_net_out_dim = img_net_dim # since no pooling operation is performed
