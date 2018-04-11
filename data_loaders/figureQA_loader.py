@@ -38,7 +38,7 @@ class FigureQADataset(data.Dataset):
         image_size = config.FIGUREQA_DICTIONARY[config.IMAGE_SIZE]
         image = misc.imread(self.images_path + str(image_size) + '/' + image_filename)
         modified_image = image[:, :, 0 : config.FIGUREQA_DICTIONARY[config.CHANNEL_COUNT]]
-        return (modified_image, encoded_question, answer_label)
+        return (modified_image / 255., encoded_question, answer_label)
 
     def __len__(self):
         return len(self.questions_list)
