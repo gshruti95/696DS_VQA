@@ -117,65 +117,55 @@ class RelNet(nn.Module):
         #    self.coord_oj = self.coord_oj.cuda()
         self.coord_oi = Variable(self.coord_oi)
         self.coord_oj = Variable(self.coord_oj)
-        # prepare coord tensor
-        def cvt_coord(i):
-            return [(i/5-2)/2., (i%5-2)/2.]
         
-        self.coord_tensor = torch.FloatTensor(config.BATCH_SIZE, 25, 2)
-        #if args.cuda:
-        #    self.coord_tensor = self.coord_tensor.cuda()
-        self.coord_tensor = Variable(self.coord_tensor)
-        np_coord_tensor = np.zeros((config.BATCH_SIZE, 25, 2))
-        for i in range(25):
-            np_coord_tensor[:,i,:] = np.array( cvt_coord(i) )
-        self.coord_tensor.data.copy_(torch.from_numpy(np_coord_tensor))
-
-
         self.fcout = FCOutputModel()
         
         self.optimizer = optim.Adam(self.parameters(), lr=config.LEARNING_RATE)
-
 
     def forward(self, img, qst):
         ques_embedding = self.qembedding(qst)
         embeddings = ques_embedding.permute(1, 0, 2)
         _, (question_features, _) = self.qlstm(embeddings)
         qst = question_features.view(-1, self.qlstm_hidden_dim)
-        #print(img.size())
-        #print(qst.size())
         x = self.conv(img) ## x = (64 x 24 x 5 x 5)
+        object_count = x.size()[2] * x.size()[3]
         
         """g"""
         mb = x.size()[0]
         n_channels = x.size()[1]
         d = x.size()[2]
-        # x_flat = (64 x 25 x 24)
         x_flat = x.view(mb,n_channels,d*d).permute(0,2,1)
+        def cvt_coord(i):
+            return [(i/5-2)/2., (i%5-2)/2.]
         
+        # prepare coord tensor
+        coord_tensor = torch.FloatTensor(config.BATCH_SIZE, object_count, 2)
+        #if args.cuda:
+        #    self.coord_tensor = self.coord_tensor.cuda()
+        coord_tensor = Variable(coord_tensor)
+        np_coord_tensor = np.zeros((config.BATCH_SIZE, object_count, 2))
+        for i in range(object_count):
+            np_coord_tensor[:,i,:] = np.array( cvt_coord(i) )
+        coord_tensor.data.copy_(torch.from_numpy(np_coord_tensor))
+
         # add coordinates
-        x_flat = torch.cat([x_flat, self.coord_tensor],2)
+        x_flat = torch.cat([x_flat, coord_tensor],2)
         
         # add question everywhere
         qst = torch.unsqueeze(qst, 1)
-        qst = qst.repeat(1,25,1)
+        qst = qst.repeat(1,object_count,1)
         qst = torch.unsqueeze(qst, 2)
-        #print(qst.size())
         
         # cast all pairs against each other
         x_i = torch.unsqueeze(x_flat,1) # (64x1x25x26+11)
-        x_i = x_i.repeat(1,25,1,1) # (64x25x25x26+11)
+        x_i = x_i.repeat(1,object_count,1,1) # (64x25x25x26+11)
         x_j = torch.unsqueeze(x_flat,2) # (64x25x1x26+11)
-        #print(x_j.size())
         x_j = torch.cat([x_j,qst],3)
-        #print(x_j.size())
-        x_j = x_j.repeat(1,1,25,1) # (64x25x25x26+11)
-        #print(x_j.size())
+        x_j = x_j.repeat(1,1,object_count,1) # (64x25x25x26+11)
         # concatenate all together
         x_full = torch.cat([x_i,x_j],3) # (64x25x25x2*26+11)
-        #print(x_full.size())
         # reshape for passing through network
         x_ = x_full.view(mb*d*d*d*d, -1)
-        #print(x_.size())
         x_ = self.g_fc1(x_)
         x_ = F.relu(x_)
         x_ = self.g_fc2(x_)
@@ -186,7 +176,7 @@ class RelNet(nn.Module):
         x_ = F.relu(x_)
         
         # reshape again and sum
-        x_g = x_.view(mb,d*d*d*d,256)
+        x_g = x_.view(mb,d*d*d*d,-1)
         x_g = x_g.sum(1).squeeze()
         
         """f"""
