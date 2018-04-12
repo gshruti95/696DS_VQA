@@ -40,21 +40,17 @@ def train(model, data_loader, optimizer, criterion, epoch_count, min_epoch_count
             # convert the images, questions and the labels to variables and then to cuda instances
             images = Variable(images, requires_grad = False)
             questions = Variable(torch.stack(questions, dim = 1), requires_grad = False)
-            
+            #questions = questions.type(torch.FloatTensor)
             # Reducing the question length for avoiding no-op recurrent time steps in processing question through RNN
-            #numpy_questions = questions.data.numpy()
-            #max_question_length = max([np.argmax(numpy_questions[i, :]) for i in xrange(numpy_questions.shape[0])]) + 1
-            #questions = questions[:, 0 : max_question_length]
-            
             labels = Variable(labels, requires_grad = False)
             images = check_and_get_gpu_instance(images.float())
             questions = check_and_get_gpu_instance(questions)
             target_labels = check_and_get_gpu_instance(labels)
+            if images.size()[0] != config.BATCH_SIZE:
+                continue
             # forward, backward, step
-            #model.zero_grad()
-            optimizer.zero_grad()
+            model.zero_grad()
             images = images.permute(0, 3, 1, 2)
-            
             predictions = model(images, questions)
             loss = criterion(predictions , target_labels)
             if mini_index % config.DISPLAY_LOSS_EVERY == 0:
@@ -79,7 +75,7 @@ def fit(model, min_epoch_count = 0):
     # get the data loader iterator
     data_loader = get_data(DataMode.TRAIN)
     # define the objective
-    criterion = nn.CrossEntropyLoss()
+    criterion = nn.NLLLoss() #nn.CrossEntropyLoss()
     # define the optimizer
     optimizer = optim.Adam(model.parameters(), lr = config.LEARNING_RATE, weight_decay = config.WEIGHT_DECAY)
     get_hyperparams()
@@ -93,7 +89,10 @@ def predict(model, data_mode, print_values = False):
     confusion_matrix = data_loader_factory.get_dataset_specific_confusion_matrix(config.DATALOADER_TYPE) #(True class, predicted class)
     for _, (images, questions, labels) in enumerate(data_loader):
         images = Variable(images, requires_grad = False)
+        if images.size()[0] != config.BATCH_SIZE:
+            continue
         questions = Variable(torch.stack(questions, dim = 1), requires_grad = False)
+        #questions = questions.type(torch.FloatTensor)
         labels = Variable(labels, requires_grad = False)
         images = check_and_get_gpu_instance(images)
         questions = check_and_get_gpu_instance(questions)

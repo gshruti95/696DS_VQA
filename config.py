@@ -14,6 +14,7 @@ WORKING_DIR = '../' # This is the path to vqa directory which contains datasets 
 CLEVR_DATASET_PATH = WORKING_DIR + 'datasets/CLEVR/'
 FIGUREQA_DATASET_PATH = WORKING_DIR + 'datasets/FIGUREQA/'
 SHAPES_DATASET_PATH = WORKING_DIR + 'datasets/SHAPES/'
+SORT_OF_CLEVR_DATASET_PATH = WORKING_DIR + 'datasets/SORT_OF_CLEVR/'
 
 #----------------------------------------------------------------------------------------
 # MODEL PATHS
@@ -32,10 +33,10 @@ DISPLAY_LOSS_EVERY = 20
 DISPLAY_METRICS_EVERY = 5
 #-----------------------------------------------------------------------------------------
 # TRAINING HYPERPARAMETERS
-CHECKPOINT_FREQUENCY = 50
+CHECKPOINT_FREQUENCY = 25
 BATCH_SIZE = 100
 LEARNING_RATE = 1e-4
-WEIGHT_DECAY = 0
+WEIGHT_DECAY = 0.0
 EPOCH_COUNT = 50
 #------------------------------------------------------------------------------------------
 # KEYWORDS
@@ -67,6 +68,8 @@ LSTM_LAYERS = 'LSTM_LAYERS'
 F_LAYER_DIM = 'F layer dimension in RN'
 G_LAYER_DIM = 'G layer dimension in RN'
 FILTER_SIZE = 'Filter size'
+REL_ANSWER_VOCAB_SIZE = 'REL ANSWER VOCAB SIZE'
+NOREL_ANSWER_VOCAB_SIZE = 'NOREL ANSWER VOCAB SIZE'
 #-------------------------------------------------------------------------------------------
 # Dataset Dictionaries
 CLEVR_DICTIONARY = {IMAGE_SIZE : 30, QUESTION_VOCAB_SIZE : 81, ANSWER_VOCAB_SIZE : 28, MAX_QUESTION_LENGTH : 44, CHANNEL_COUNT : 3}
@@ -75,7 +78,8 @@ FIGUREQA_DICTIONARY = {IMAGE_SIZE : 30, QUESTION_VOCAB_SIZE : 85, ANSWER_VOCAB_S
 FIGUREQA_QUESTION_FILES = {DataMode.TRAIN : 'FigureQA_train.json', DataMode.TEST : 'FigureQA_test.json', DataMode.VAL : 'FigureQA_val.json'}
 SHAPES_DICTIONARY = {IMAGE_SIZE : 64, QUESTION_VOCAB_SIZE : 15, ANSWER_VOCAB_SIZE : 2, MAX_QUESTION_LENGTH : 12, CHANNEL_COUNT : 3}
 SHAPES_QUESTION_FILES = {DataMode.TRAIN : 'shapes_train.json', DataMode.TEST : 'shapes_test.json', DataMode.VAL : 'shapes_val.json'}
-
+SORT_OF_CLEVR_DICTIONARY = {IMAGE_SIZE : 75 , QUESTION_EMBEDDING_SIZE : 11, REL_ANSWER_VOCAB_SIZE : 10, NOREL_ANSWER_VOCAB_SIZE : 4, CHANNEL_COUNT : 3}
+SORT_OF_CLEVR_QUESTION_FILES = {DataMode.TRAIN : 'sort_of_clevr_train.json', DataMode.TEST : 'sort_of_clevr_test.json', DataMode.VAL : 'sort_of_clevr_val.json'}
 #--------------------------------------------------------------------------------------------------------
 
 # Architecture Dictionaries

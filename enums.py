@@ -1,5 +1,5 @@
 '''
-Thsi file contains all the enumerations used in the code
+This file contains all the enumerations used in the code
 '''
 
 import sys
@@ -16,6 +16,7 @@ class DataLoaderType(enumerate):
     CLEVR = 'CLEVR'
     FIGUREQA = 'FigureQA'
     SHAPES = 'SHAPES'
+    SORT_OF_CLEVR = 'SORT OF CLEVR'
 
 '''
 ModelType define the architecture type.
