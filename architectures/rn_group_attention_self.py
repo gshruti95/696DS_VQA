@@ -90,19 +90,19 @@ class RelNetGroupAttentionSelf(nn.Module):
             self.question_vocab_size = dataset_dictionary[config.QUESTION_VOCAB_SIZE]
             self.answer_vocab_size = dataset_dictionary[config.ANSWER_VOCAB_SIZE]
             self.question_embedding_size = architecture_dictionary[config.QUESTION_EMBEDDING_SIZE]
-            self.qlstm_hidden_dim = architecture_dictionary[config.LSTM_HIDDEN_DIM]
+            qlstm_hidden_dim = architecture_dictionary[config.LSTM_HIDDEN_DIM]
             qlstm_num_layers = architecture_dictionary[config.LSTM_LAYERS]
 
             # construct question embedding
             self.qembedding = nn.Embedding(self.question_vocab_size,
                                        self.question_embedding_size)
             self.qlstm = nn.LSTM(self.question_embedding_size,
-                             self.qlstm_hidden_dim,
+                             qlstm_hidden_dim,
                              qlstm_num_layers, dropout=0)
         
-            ques_dim = self.qlstm_hidden_dim
+            self.ques_dim = self.qlstm_hidden_dim
         else:
-            ques_dim = dataset_dictionary[config.QUESTION_EMBEDDING_SIZE]
+            self.ques_dim = dataset_dictionary[config.QUESTION_EMBEDDING_SIZE]
 
         self.filter_size = architecture_dictionary[config.FILTER_SIZE]
         self.conv = ConvInputModel(self.filter_size)
@@ -110,7 +110,7 @@ class RelNetGroupAttentionSelf(nn.Module):
         self.attention_layer = nn.Linear((self.filter_size + 2) * self.group_size, self.group_size)
         
         ##(number of filters per object+coordinate of object)*2+question vector
-        self.g_fc1 = nn.Linear((self.filter_size + 2)*2+ ques_dim, 256)
+        self.g_fc1 = nn.Linear((self.filter_size + 2)*2+ self.ques_dim, 256)
 
         self.g_fc2 = nn.Linear(256, 256)
         self.g_fc3 = nn.Linear(256, 256)
@@ -135,7 +135,7 @@ class RelNetGroupAttentionSelf(nn.Module):
             ques_embedding = self.qembedding(qst)
             embeddings = ques_embedding.permute(1, 0, 2)
             _, (question_features, _) = self.qlstm(embeddings)
-            qst = question_features.view(-1, self.qlstm_hidden_dim)
+            qst = question_features.view(-1, self.ques_dim)
         else:
             qst = torch.transpose(qst, 0, 1)
             qst = qst.float()
@@ -213,7 +213,7 @@ class RelNetGroupAttentionSelf(nn.Module):
         # concatenate all together
         x_full = torch.cat([x_i,x_j],3) # (64x25x25x2*26+11)
         # reshape for passing through network
-        x_ = x_full.view(-1, (self.filter_size + 2)*2+ self.qlstm_hidden_dim)
+        x_ = x_full.view(-1, (self.filter_size + 2)*2+ self.ques_dim)
         x_ = self.g_fc1(x_)
         x_ = F.relu(x_)
         x_ = self.g_fc2(x_)
