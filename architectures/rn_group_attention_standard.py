@@ -82,9 +82,9 @@ class BasicModel(nn.Module):
         torch.save(self.state_dict(), 'model/epoch_{}_{:02d}.pth'.format(self.name, epoch))
 
 
-class RelNet(nn.Module):
+class RelNetGroupAttentionStandard(nn.Module):
     def __init__(self, dataset_dictionary, architecture_dictionary):
-        super(RelNet, self).__init__()
+        super(RelNetGroupAttentionStandard, self).__init__()
 
         if config.DATALOADER_TYPE != DataLoaderType.SORT_OF_CLEVR:
             self.question_vocab_size = dataset_dictionary[config.QUESTION_VOCAB_SIZE]
@@ -106,6 +106,8 @@ class RelNet(nn.Module):
 
         self.filter_size = architecture_dictionary[config.FILTER_SIZE]
         self.conv = ConvInputModel(self.filter_size)
+        self.group_size = architecture_dictionary[config.ATTENTION_GROUP_SIZE]
+        self.attention_layer = nn.Linear(self.filter_size + 2 + ques_dim, 1)
         
         ##(number of filters per object+coordinate of object)*2+question vector
         self.g_fc1 = nn.Linear((self.filter_size + 2)*2+ ques_dim, 256)
@@ -163,10 +165,55 @@ class RelNet(nn.Module):
         x_flat = torch.cat([x_flat, coord_tensor],2)
         
         # add question everywhere
+        old_qst = qst
         qst = torch.unsqueeze(qst, 1)
         qst = qst.repeat(1,object_count,1)
         qst = torch.unsqueeze(qst, 2)
 
+        #print(x_flat.size())
+        #print(qst.size())
+        
+        ########################################## Group Attention logic starts ################################################################# 
+        # permute the cells in the order (N, objects count, embedding)
+        # permute the question in the order (N, objects count, embedding)
+        modified_cells = x_flat
+        N = x_flat.size()[0]
+        modified_three = qst.squeeze(2)
+        #print(modified_cells.size())
+        #print(modified_three.size())
+        #print(modified_cells.size())
+        combined_features = torch.cat([modified_cells, modified_three], dim = 2) # concat across the embedding
+        # pass the combined embedding through the attention layers
+        feature_scores = self.attention_layer(combined_features)
+        # reshape the features to the form (N, 16)
+        feature_scores = feature_scores.view(N, -1)
+        # perform groupwise softmax and weighted attention
+        modified_n_objects = object_count / self.group_size # select group size to divide the object count perfectly
+        compressed_cells = Variable(torch.zeros(modified_cells.size()[0], modified_n_objects, modified_cells.size()[2]))
+        if modified_cells.is_cuda:
+            compressed_cells = compressed_cells.cuda()
+        j = 0
+        while j < modified_n_objects:
+            temp_scores = feature_scores[:, j * self.group_size : (j + 1) * self.group_size] #(N, group_size)
+            temp_features = modified_cells[:, j * self.group_size : (j + 1) * self.group_size, :] #(N, group_size, embedding dimension)
+            # apply softmax on the temp_scores to perform normalizarion
+            normalized_temp_scores = F.softmax(temp_scores)
+            normalized_temp_scores = normalized_temp_scores.unsqueeze(2).repeat(1, 1, modified_cells.size()[2])
+            # apply the scalar weight on each of the features
+            compressed_cells[:, j, :] = torch.sum(normalized_temp_scores * temp_features, dim = 1)
+            j = j + 1
+        # change the order of the objects
+        x_flat = compressed_cells
+        # change the number of final objects for comparision
+        object_count = modified_n_objects
+        qst = torch.unsqueeze(old_qst, 1)
+        qst = qst.repeat(1,object_count,1)
+        qst = torch.unsqueeze(qst, 2)
+        d = object_count
+        #print(x_flat.size())
+        #print(qst.size())
+        ######################################### Group Attention logic ends ######################################################################
+        
         # cast all pairs against each other
         x_i = torch.unsqueeze(x_flat,1) # (64x1x25x26+11)
         x_i = x_i.repeat(1,object_count,1,1) # (64x25x25x26+11)
@@ -174,9 +221,12 @@ class RelNet(nn.Module):
         x_j = torch.cat([x_j,qst],3)
         x_j = x_j.repeat(1,1,object_count,1) # (64x25x25x26+11)
         # concatenate all together
+        #print(x_i.size())
+        #print(x_j.size())
         x_full = torch.cat([x_i,x_j],3) # (64x25x25x2*26+11)
+        #print(x_full.size())
         # reshape for passing through network
-        x_ = x_full.view(mb*d*d*d*d, -1)
+        x_ = x_full.view(-1, (self.filter_size + 2)*2+ self.qlstm_hidden_dim)
         #print(x_.size())
         x_ = self.g_fc1(x_)
         x_ = F.relu(x_)
@@ -186,13 +236,12 @@ class RelNet(nn.Module):
         x_ = F.relu(x_)
         x_ = self.g_fc4(x_)
         x_ = F.relu(x_)
+        #print(x_.size())
         
         # reshape again and sum
-        x_g = x_.view(mb,d*d*d*d,-1)
-        #print(x_g.size())
+        x_g = x_.view(mb,-1, 256)
         x_g = x_g.sum(1).squeeze()
         #print(x_g.size())
-        
         """f"""
         x_f = self.f_fc1(x_g)
         x_f = F.relu(x_f)

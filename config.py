@@ -7,7 +7,7 @@ from enums import DataLoaderType, ModelType, DataMode
 
 #---------------------------------------------------------------------------------
 DATALOADER_TYPE = DataLoaderType.SHAPES
-MODEL_TYPE = ModelType.RELATION_GROUP_ATTENTION_STANDARD
+MODEL_TYPE = ModelType.RELATION_GROUP_ATTENTION_SELF
 #-----------------------------------------------------------------------------------
 # Dataset Paths
 WORKING_DIR = '../' # This is the path to vqa directory which contains datasets and VQA repository
@@ -30,14 +30,14 @@ HYPERPARAM_FILENAME = 'hyperparams.txt'
 TRAIN_MODE = True
 USE_GPU = True
 DISPLAY_LOSS_EVERY = 20
-DISPLAY_METRICS_EVERY = 5
+DISPLAY_METRICS_EVERY = 1
 #-----------------------------------------------------------------------------------------
 # TRAINING HYPERPARAMETERS
 CHECKPOINT_FREQUENCY = 25
 BATCH_SIZE = 100
 LEARNING_RATE = 1e-4
 WEIGHT_DECAY = 0.0
-EPOCH_COUNT = 200
+EPOCH_COUNT = 50
 #------------------------------------------------------------------------------------------
 # KEYWORDS
 IMAGES = 'images'
