@@ -40,11 +40,11 @@ class ConvInputModel(nn.Module):
 
   
 class FCOutputModel(nn.Module):
-    def __init__(self):
+    def __init__(self, class_count):
         super(FCOutputModel, self).__init__()
 
         self.fc2 = nn.Linear(256, 256)
-        self.fc3 = nn.Linear(256, 10)
+        self.fc3 = nn.Linear(256, class_count)
 
     def forward(self, x):
         x = self.fc2(x)
@@ -100,7 +100,7 @@ class RelNetGroupAttentionSelf(nn.Module):
                              qlstm_hidden_dim,
                              qlstm_num_layers, dropout=0)
         
-            self.ques_dim = self.qlstm_hidden_dim
+            self.ques_dim = qlstm_hidden_dim
         else:
             self.ques_dim = dataset_dictionary[config.QUESTION_EMBEDDING_SIZE]
 
@@ -126,7 +126,7 @@ class RelNetGroupAttentionSelf(nn.Module):
         self.coord_oi = Variable(self.coord_oi)
         self.coord_oj = Variable(self.coord_oj)
         
-        self.fcout = FCOutputModel()
+        self.fcout = FCOutputModel(dataset_dictionary[config.ANSWER_VOCAB_SIZE])
         
         self.optimizer = optim.Adam(self.parameters(), lr=config.LEARNING_RATE)
 
