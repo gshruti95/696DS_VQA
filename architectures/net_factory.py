@@ -6,6 +6,9 @@ from baseline import BaselineModel
 from rn import RelNet
 from data_loaders import data_loader_factory
 import config
+from rn_group_attention_standard import RelNetGroupAttentionStandard
+from rn_group_attention_alternate import RelNetGroupAttentionAlternate
+from rn_group_attention_self import RelNetGroupAttentionSelf
 
 def get_network(network_type):
     '''
@@ -22,3 +25,9 @@ def get_network(network_type):
         pass
     elif network_type == ModelType.MEMORY_NETWORK:
         pass
+    elif network_type == ModelType.RELATION_GROUP_ATTENTION_STANDARD:
+        return RelNetGroupAttentionStandard(dataset_dict, config.RELATION_GROUP_ATTENTION_NETWORK_DICTIONARY)
+    elif network_type == ModelType.RELATION_GROUP_ATTENTION_ALTERNATE:
+        return RelNetGroupAttentionAlternate(dataset_dict, config.RELATION_GROUP_ATTENTION_NETWORK_DICTIONARY)
+    elif network_type == ModelType.RELATION_GROUP_ATTENTION_SELF:
+        return RelNetGroupAttentionSelf(dataset_dict, config.RELATION_GROUP_ATTENTION_NETWORK_DICTIONARY)

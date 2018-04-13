@@ -9,17 +9,17 @@ from enums import DataLoaderType
 
 
 class ConvInputModel(nn.Module):
-    def __init__(self):
+    def __init__(self, filter_size):
         super(ConvInputModel, self).__init__()
         
-        self.conv1 = nn.Conv2d(3, 24, 3, stride=2, padding=1)
-        self.batchNorm1 = nn.BatchNorm2d(24)
-        self.conv2 = nn.Conv2d(24, 24, 3, stride=2, padding=1)
-        self.batchNorm2 = nn.BatchNorm2d(24)
-        self.conv3 = nn.Conv2d(24, 24, 3, stride=2, padding=1)
-        self.batchNorm3 = nn.BatchNorm2d(24)
-        self.conv4 = nn.Conv2d(24, 24, 3, stride=2, padding=1)
-        self.batchNorm4 = nn.BatchNorm2d(24)
+        self.conv1 = nn.Conv2d(3, filter_size, 3, stride=2, padding=1)
+        self.batchNorm1 = nn.BatchNorm2d(filter_size)
+        self.conv2 = nn.Conv2d(filter_size, filter_size, 3, stride=2, padding=1)
+        self.batchNorm2 = nn.BatchNorm2d(filter_size)
+        self.conv3 = nn.Conv2d(filter_size, filter_size, 3, stride=2, padding=1)
+        self.batchNorm3 = nn.BatchNorm2d(filter_size)
+        self.conv4 = nn.Conv2d(filter_size, filter_size, 3, stride=2, padding=1)
+        self.batchNorm4 = nn.BatchNorm2d(filter_size)
 
         
     def forward(self, img):
@@ -104,10 +104,11 @@ class RelNet(nn.Module):
         else:
             ques_dim = dataset_dictionary[config.QUESTION_EMBEDDING_SIZE]
 
-        self.conv = ConvInputModel()
+        self.filter_size = architecture_dictionary[config.FILTER_SIZE]
+        self.conv = ConvInputModel(self.filter_size)
         
         ##(number of filters per object+coordinate of object)*2+question vector
-        self.g_fc1 = nn.Linear((24+2)*2+ ques_dim, 256)
+        self.g_fc1 = nn.Linear((self.filter_size + 2)*2+ ques_dim, 256)
 
         self.g_fc2 = nn.Linear(256, 256)
         self.g_fc3 = nn.Linear(256, 256)
@@ -165,7 +166,7 @@ class RelNet(nn.Module):
         qst = torch.unsqueeze(qst, 1)
         qst = qst.repeat(1,object_count,1)
         qst = torch.unsqueeze(qst, 2)
-        
+
         # cast all pairs against each other
         x_i = torch.unsqueeze(x_flat,1) # (64x1x25x26+11)
         x_i = x_i.repeat(1,object_count,1,1) # (64x25x25x26+11)
@@ -176,6 +177,7 @@ class RelNet(nn.Module):
         x_full = torch.cat([x_i,x_j],3) # (64x25x25x2*26+11)
         # reshape for passing through network
         x_ = x_full.view(mb*d*d*d*d, -1)
+        print(x_.size())
         x_ = self.g_fc1(x_)
         x_ = F.relu(x_)
         x_ = self.g_fc2(x_)
@@ -187,7 +189,9 @@ class RelNet(nn.Module):
         
         # reshape again and sum
         x_g = x_.view(mb,d*d*d*d,-1)
+        print(x_g.size())
         x_g = x_g.sum(1).squeeze()
+        print(x_g.size())
         
         """f"""
         x_f = self.f_fc1(x_g)

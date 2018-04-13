@@ -7,7 +7,7 @@ from enums import DataLoaderType, ModelType, DataMode
 
 #---------------------------------------------------------------------------------
 DATALOADER_TYPE = DataLoaderType.SHAPES
-MODEL_TYPE = ModelType.RELATION_NETWORK
+MODEL_TYPE = ModelType.RELATION_GROUP_ATTENTION_STANDARD
 #-----------------------------------------------------------------------------------
 # Dataset Paths
 WORKING_DIR = '../' # This is the path to vqa directory which contains datasets and VQA repository
@@ -37,7 +37,7 @@ CHECKPOINT_FREQUENCY = 25
 BATCH_SIZE = 100
 LEARNING_RATE = 1e-4
 WEIGHT_DECAY = 0.0
-EPOCH_COUNT = 50
+EPOCH_COUNT = 200
 #------------------------------------------------------------------------------------------
 # KEYWORDS
 IMAGES = 'images'
@@ -70,6 +70,7 @@ G_LAYER_DIM = 'G layer dimension in RN'
 FILTER_SIZE = 'Filter size'
 REL_ANSWER_VOCAB_SIZE = 'REL ANSWER VOCAB SIZE'
 NOREL_ANSWER_VOCAB_SIZE = 'NOREL ANSWER VOCAB SIZE'
+ATTENTION_GROUP_SIZE = 'Attention group size in RN' 
 #-------------------------------------------------------------------------------------------
 # Dataset Dictionaries
 CLEVR_DICTIONARY = {IMAGE_SIZE : 30, QUESTION_VOCAB_SIZE : 81, ANSWER_VOCAB_SIZE : 28, MAX_QUESTION_LENGTH : 44, CHANNEL_COUNT : 3}
@@ -87,3 +88,7 @@ RELATION_NETWORK_DICTIONARY = {
                                 QUESTION_EMBEDDING_SIZE : 256, ENABLE_BATCHNORM : False, LSTM_HIDDEN_DIM : 256, LSTM_LAYERS : 1,
                                 F_LAYER_DIM : 256, G_LAYER_DIM : 256, FILTER_SIZE : 24
                             }
+RELATION_GROUP_ATTENTION_NETWORK_DICTIONARY = {
+                                QUESTION_EMBEDDING_SIZE : 256, ENABLE_BATCHNORM : False, LSTM_HIDDEN_DIM : 256, LSTM_LAYERS : 1,
+                                F_LAYER_DIM : 256, G_LAYER_DIM : 256, FILTER_SIZE : 64, ATTENTION_GROUP_SIZE : 2
+}
