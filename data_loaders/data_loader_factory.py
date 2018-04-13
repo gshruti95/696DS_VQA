@@ -58,7 +58,7 @@ def get_dataset_specific_confusion_matrix(data_loader_type):
     elif data_loader_type == DataLoaderType.SHAPES:
         class_count = config.SHAPES_DICTIONARY[config.ANSWER_VOCAB_SIZE]
     elif data_loader_type == DataLoaderType.SORT_OF_CLEVR:
-        class_count = config.SORT_OF_CLEVR_DICTIONARY[config.REL_ANSWER_VOCAB_SIZE]
+        class_count = config.SORT_OF_CLEVR_DICTIONARY[config.ANSWER_VOCAB_SIZE]
 
     return np.zeros((class_count, class_count))
 
