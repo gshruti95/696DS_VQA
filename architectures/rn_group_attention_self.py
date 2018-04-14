@@ -9,9 +9,9 @@ from enums import DataLoaderType
 
 
 class ConvInputModel(nn.Module):
-    def __init__(self, filter_size):
+    def __init__(self, filter_size, group_size):
         super(ConvInputModel, self).__init__()
-        
+        self.group_size = group_size
         self.conv1 = nn.Conv2d(3, filter_size, 3, stride=2, padding=1)
         self.batchNorm1 = nn.BatchNorm2d(filter_size)
         self.conv2 = nn.Conv2d(filter_size, filter_size, 3, stride=2, padding=1)
@@ -33,6 +33,8 @@ class ConvInputModel(nn.Module):
         x = self.conv3(x)
         x = F.relu(x)
         x = self.batchNorm3(x)
+        if self.group_size == 4 or self.group_size == 8:
+            return x
         x = self.conv4(x)
         x = F.relu(x)
         x = self.batchNorm4(x)
@@ -105,8 +107,8 @@ class RelNetGroupAttentionSelf(nn.Module):
             self.ques_dim = dataset_dictionary[config.QUESTION_EMBEDDING_SIZE]
 
         self.filter_size = architecture_dictionary[config.FILTER_SIZE]
-        self.conv = ConvInputModel(self.filter_size)
         self.group_size = architecture_dictionary[config.ATTENTION_GROUP_SIZE]
+        self.conv = ConvInputModel(self.filter_size, self.group_size)
         self.attention_layer = nn.Linear((self.filter_size + 2) * self.group_size, self.group_size)
         
         ##(number of filters per object+coordinate of object)*2+question vector
