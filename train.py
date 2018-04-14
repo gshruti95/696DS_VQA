@@ -88,8 +88,14 @@ def predict(model, data_mode, print_values = False):
     print('Computing metrics for ' + data_mode + ' mode.')
     data_loader = get_data(data_mode)
     model = model.eval()
+    global_loss = 0
+    batch_count = 0
+    MAX_BATCH_COUNT = 30
+    criterion = nn.NLLLoss()
     confusion_matrix = data_loader_factory.get_dataset_specific_confusion_matrix(config.DATALOADER_TYPE) #(True class, predicted class)
     for _, (images, questions, labels) in enumerate(data_loader):
+        if batch_count > MAX_BATCH_COUNT:
+            break
         images = Variable(images, requires_grad = False)
         if images.size()[0] != config.BATCH_SIZE:
             continue
@@ -101,6 +107,8 @@ def predict(model, data_mode, print_values = False):
         target_labels = check_and_get_gpu_instance(labels)
         images = images.permute(0, 3, 1, 2)
         predictions = model(images.float(), questions)
+        global_loss += criterion(predictions , target_labels).data[0]
+        batch_count += 1
         _, predicted_array = torch.max(predictions, 1) #(N,)
         predicted_array = predicted_array.cpu().data.numpy() #(N,)
         target_array = target_labels.cpu().data.numpy() #(N,)
@@ -115,7 +123,7 @@ def predict(model, data_mode, print_values = False):
     # compute accuracy, precision, recall and f1-score
     if data_mode == DataMode.TEST:
         return # no stats to show for test mode since ground truth is not available
-    
+    print('Loss = ' + str(global_loss * 1.0 / (batch_count + 1e-10)))
     print('Accuracy = ' + str(utilities.get_accuracy(confusion_matrix)))
     print('Precision = ' + str(utilities.get_precision(confusion_matrix)))
     print('Recall = ' + str(utilities.get_recall(confusion_matrix)))
