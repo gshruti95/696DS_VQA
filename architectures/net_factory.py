@@ -9,6 +9,7 @@ import config
 from rn_group_attention_standard import RelNetGroupAttentionStandard
 from rn_group_attention_alternate import RelNetGroupAttentionAlternate
 from rn_group_attention_self import RelNetGroupAttentionSelf
+from rn_batch_norm import RelNetBatchNorm
 
 def get_network(network_type):
     '''
@@ -31,3 +32,5 @@ def get_network(network_type):
         return RelNetGroupAttentionAlternate(dataset_dict, config.RELATION_GROUP_ATTENTION_NETWORK_DICTIONARY)
     elif network_type == ModelType.RELATION_GROUP_ATTENTION_SELF:
         return RelNetGroupAttentionSelf(dataset_dict, config.RELATION_GROUP_ATTENTION_NETWORK_DICTIONARY)
+    elif network_type == ModelType.RELATION_NETWORK_BATCH_NORM:
+        return RelNetBatchNorm(dataset_dict, config.RELATION_NETWORK_DICTIONARY)

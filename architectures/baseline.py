@@ -63,4 +63,4 @@ class BaselineModel(nn.Module):
         question_features = question_features.view(-1, self.lstm_hidden_state_size)
         combined_features = torch.cat((image_features, question_features), dim = 1)
         output = self.linear_layer2(combined_features)
-        return output
+        return F.log_softmax(output)
