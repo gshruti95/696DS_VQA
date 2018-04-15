@@ -15,7 +15,7 @@ from enums import ModelType
 dataset_list = [DataLoaderType.SHAPES, DataLoaderType.SORT_OF_CLEVR]
 network_list = [ModelType.RELATION_NETWORK]
 #network_list = [ModelType.RELATION_GROUP_ATTENTION_STANDARD, ModelType.RELATION_GROUP_ATTENTION_ALTERNATE, ModelType.RELATION_GROUP_ATTENTION_SELF]
-lr_list = [1e-5, 1e-6, 1e-7]
+lr_list = [1e-3, 1e-4, 1e-5, 1e-6]
 weight_decay_list = [1e-3, 1e-5]
 batch_size = 100
 epoch_count = 50

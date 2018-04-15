@@ -6,7 +6,7 @@ from enums import DataLoaderType, ModelType, DataMode
 
 
 #---------------------------------------------------------------------------------
-DATALOADER_TYPE = DataLoaderType.SORT_OF_CLEVR
+DATALOADER_TYPE = DataLoaderType.SHAPES
 MODEL_TYPE = ModelType.RELATION_NETWORK
 #-----------------------------------------------------------------------------------
 # Dataset Paths
@@ -30,14 +30,14 @@ HYPERPARAM_FILENAME = 'hyperparams.txt'
 TRAIN_MODE = True
 USE_GPU = True
 DISPLAY_LOSS_EVERY = 20
-DISPLAY_METRICS_EVERY = 1
+DISPLAY_METRICS_EVERY = 10
 #-----------------------------------------------------------------------------------------
 # TRAINING HYPERPARAMETERS
 CHECKPOINT_FREQUENCY = 25
-BATCH_SIZE = 200
-LEARNING_RATE = 1e-7
-WEIGHT_DECAY = 1e-3
-EPOCH_COUNT = 50
+BATCH_SIZE = 100
+LEARNING_RATE = 1e-4
+WEIGHT_DECAY = 0.0
+EPOCH_COUNT = 100
 #------------------------------------------------------------------------------------------
 # KEYWORDS
 IMAGES = 'images'
@@ -90,5 +90,5 @@ RELATION_NETWORK_DICTIONARY = {
                             }
 RELATION_GROUP_ATTENTION_NETWORK_DICTIONARY = {
                                 QUESTION_EMBEDDING_SIZE : 256, ENABLE_BATCHNORM : False, LSTM_HIDDEN_DIM : 256, LSTM_LAYERS : 1,
-                                F_LAYER_DIM : 256, G_LAYER_DIM : 256, FILTER_SIZE : 64, ATTENTION_GROUP_SIZE : 2
+                                F_LAYER_DIM : 256, G_LAYER_DIM : 256, FILTER_SIZE : 24, ATTENTION_GROUP_SIZE : 2
 }
