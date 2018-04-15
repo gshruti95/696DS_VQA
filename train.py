@@ -38,6 +38,7 @@ def train(model, data_loader, optimizer, criterion, epoch_count, min_epoch_count
     model = check_and_get_gpu_instance(model)
     for epoch_index in range(min_epoch_count, epoch_count):
         start_time = time.time()
+        model.train()
         for mini_index, (images, questions, labels) in enumerate(data_loader):
             # convert the images, questions and the labels to variables and then to cuda instances
             images = Variable(images, requires_grad = False)
