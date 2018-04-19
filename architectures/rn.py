@@ -118,9 +118,9 @@ class RelNet(nn.Module):
 
         self.coord_oi = torch.FloatTensor(config.BATCH_SIZE, 2)
         self.coord_oj = torch.FloatTensor(config.BATCH_SIZE, 2)
-        #if args.cuda:
-        #    self.coord_oi = self.coord_oi.cuda()
-        #    self.coord_oj = self.coord_oj.cuda()
+        if torch.cuda.is_available():
+            self.coord_oi = self.coord_oi.cuda()
+            self.coord_oj = self.coord_oj.cuda()
         self.coord_oi = Variable(self.coord_oi)
         self.coord_oj = Variable(self.coord_oj)
         
@@ -151,14 +151,14 @@ class RelNet(nn.Module):
         
         # prepare coord tensor
         coord_tensor = torch.FloatTensor(config.BATCH_SIZE, object_count, 2)
-        #if args.cuda:
-        #    self.coord_tensor = self.coord_tensor.cuda()
+        if torch.cuda.is_available():
+            coord_tensor = coord_tensor.cuda()
         coord_tensor = Variable(coord_tensor)
         np_coord_tensor = np.zeros((config.BATCH_SIZE, object_count, 2))
         for i in range(object_count):
             np_coord_tensor[:,i,:] = np.array( cvt_coord(i) )
         coord_tensor.data.copy_(torch.from_numpy(np_coord_tensor))
-
+        
         # add coordinates
         x_flat = torch.cat([x_flat, coord_tensor],2)
         

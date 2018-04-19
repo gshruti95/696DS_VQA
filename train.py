@@ -34,8 +34,8 @@ def check_and_get_gpu_instance(item):
     return item
 
 def train(model, data_loader, optimizer, criterion, epoch_count, min_epoch_count = 0):
-    predict(model, config.DataMode.TRAIN)
-    predict(model, config.DataMode.VAL)
+    #predict(model, config.DataMode.TRAIN)
+    #predict(model, config.DataMode.VAL)
     # train the model for fixed number of epochs
     model = check_and_get_gpu_instance(model)
     for epoch_index in range(min_epoch_count, epoch_count):
@@ -49,8 +49,8 @@ def train(model, data_loader, optimizer, criterion, epoch_count, min_epoch_count
             # Reducing the question length for avoiding no-op recurrent time steps in processing question through RNN
             labels = Variable(labels, requires_grad = False)
             images = check_and_get_gpu_instance(images.float())
-            if config.DATALOADER_TYPE == DataLoaderType.SORT_OF_CLEVR:
-                questions = check_and_get_gpu_instance(questions)
+            #if config.DATALOADER_TYPE == DataLoaderType.SORT_OF_CLEVR:
+            questions = check_and_get_gpu_instance(questions)
             target_labels = check_and_get_gpu_instance(labels)
             if images.size()[0] != config.BATCH_SIZE:
                 continue
@@ -65,6 +65,7 @@ def train(model, data_loader, optimizer, criterion, epoch_count, min_epoch_count
             optimizer.step()
              
         if (epoch_index + 1) % config.DISPLAY_METRICS_EVERY == 0:
+            continue
             predict(model, config.DataMode.TRAIN)
             predict(model, config.DataMode.VAL)
         
@@ -111,7 +112,7 @@ def predict(model, data_mode, print_values = False):
             questions = check_and_get_gpu_instance(questions)
         target_labels = check_and_get_gpu_instance(labels)
         images = images.permute(0, 3, 1, 2)
-        predictions = model(images.float(), questions)
+        predictions = model(images, questions)
         global_loss += criterion(predictions , target_labels).data[0]
         batch_count += 1
         _, predicted_array = torch.max(predictions, 1) #(N,)
