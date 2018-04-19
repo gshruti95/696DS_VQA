@@ -107,7 +107,8 @@ def predict(model, data_mode, print_values = False):
         #questions = questions.type(torch.FloatTensor)
         labels = Variable(labels, requires_grad = False)
         images = check_and_get_gpu_instance(images)
-        questions = check_and_get_gpu_instance(questions)
+        if config.DATALOADER_TYPE == DataLoaderType.SORT_OF_CLEVR:
+            questions = check_and_get_gpu_instance(questions)
         target_labels = check_and_get_gpu_instance(labels)
         images = images.permute(0, 3, 1, 2)
         predictions = model(images.float(), questions)
