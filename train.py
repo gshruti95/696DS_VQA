@@ -29,9 +29,11 @@ import time
 
 def check_and_get_gpu_instance(item):
     return item.cuda()
-    #if torch.cuda.is_available() == True:
-    #    return item.cuda()
-    #return item
+    '''
+    if torch.cuda.is_available() == True:
+        return item.cuda()
+    return item
+    '''
 
 def train(model, data_loader, optimizer, criterion, epoch_count, min_epoch_count = 0):
     predict(model, config.DataMode.TRAIN)
@@ -100,15 +102,20 @@ def predict(model, data_mode, print_values = False):
     for _, (images, questions, labels) in enumerate(data_loader):
         if batch_count > MAX_BATCH_COUNT:
             break
+        # convert the images, questions and the labels to variables and then to cuda instances
         images = Variable(images, requires_grad = False)
-        if images.size()[0] != config.BATCH_SIZE:
-            continue
         questions = Variable(torch.stack(questions, dim = 1), requires_grad = False)
         #questions = questions.type(torch.FloatTensor)
+        # Reducing the question length for avoiding no-op recurrent time steps in processing question through RNN
         labels = Variable(labels, requires_grad = False)
         images = check_and_get_gpu_instance(images.float())
+        #if config.DATALOADER_TYPE == DataLoaderType.SORT_OF_CLEVR:
         questions = check_and_get_gpu_instance(questions)
         target_labels = check_and_get_gpu_instance(labels)
+        if images.size()[0] != config.BATCH_SIZE:
+            continue
+        # forward, backward, step
+        model.zero_grad()
         images = images.permute(0, 3, 1, 2)
         predictions = model(images, questions)
         global_loss += criterion(predictions , target_labels).data[0]
