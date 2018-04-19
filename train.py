@@ -28,14 +28,14 @@ import time
 
 
 def check_and_get_gpu_instance(item):
-    item.cuda()
-    if torch.cuda.is_available() == True and config.USE_GPU == True:
-        return item.cuda()
-    return item
+    return item.cuda()
+    #if torch.cuda.is_available() == True:
+    #    return item.cuda()
+    #return item
 
 def train(model, data_loader, optimizer, criterion, epoch_count, min_epoch_count = 0):
-    #predict(model, config.DataMode.TRAIN)
-    #predict(model, config.DataMode.VAL)
+    predict(model, config.DataMode.TRAIN)
+    predict(model, config.DataMode.VAL)
     # train the model for fixed number of epochs
     model = check_and_get_gpu_instance(model)
     for epoch_index in range(min_epoch_count, epoch_count):
@@ -65,7 +65,6 @@ def train(model, data_loader, optimizer, criterion, epoch_count, min_epoch_count
             optimizer.step()
              
         if (epoch_index + 1) % config.DISPLAY_METRICS_EVERY == 0:
-            continue
             predict(model, config.DataMode.TRAIN)
             predict(model, config.DataMode.VAL)
         
@@ -107,9 +106,8 @@ def predict(model, data_mode, print_values = False):
         questions = Variable(torch.stack(questions, dim = 1), requires_grad = False)
         #questions = questions.type(torch.FloatTensor)
         labels = Variable(labels, requires_grad = False)
-        images = check_and_get_gpu_instance(images)
-        if config.DATALOADER_TYPE == DataLoaderType.SORT_OF_CLEVR:
-            questions = check_and_get_gpu_instance(questions)
+        images = check_and_get_gpu_instance(images.float())
+        questions = check_and_get_gpu_instance(questions)
         target_labels = check_and_get_gpu_instance(labels)
         images = images.permute(0, 3, 1, 2)
         predictions = model(images, questions)
