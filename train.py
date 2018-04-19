@@ -22,11 +22,13 @@ import numpy as np
 from architectures import net_factory
 from data_loaders import data_loader_factory
 from enums import DataMode
+from enums import DataLoaderType
 
 import time
 
 
 def check_and_get_gpu_instance(item):
+    item.cuda()
     if torch.cuda.is_available() == True and config.USE_GPU == True:
         return item.cuda()
     return item
@@ -47,7 +49,8 @@ def train(model, data_loader, optimizer, criterion, epoch_count, min_epoch_count
             # Reducing the question length for avoiding no-op recurrent time steps in processing question through RNN
             labels = Variable(labels, requires_grad = False)
             images = check_and_get_gpu_instance(images.float())
-            questions = check_and_get_gpu_instance(questions)
+            if config.DATALOADER_TYPE == DataLoaderType.SORT_OF_CLEVR:
+                questions = check_and_get_gpu_instance(questions)
             target_labels = check_and_get_gpu_instance(labels)
             if images.size()[0] != config.BATCH_SIZE:
                 continue
