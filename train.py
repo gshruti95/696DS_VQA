@@ -36,8 +36,8 @@ def check_and_get_gpu_instance(item):
     '''
 
 def train(model, data_loader, optimizer, criterion, epoch_count, min_epoch_count = 0):
-    predict(model, config.DataMode.TRAIN)
-    predict(model, config.DataMode.VAL)
+    #predict(model, config.DataMode.TRAIN)
+    #predict(model, config.DataMode.VAL)
     # train the model for fixed number of epochs
     model = check_and_get_gpu_instance(model)
     for epoch_index in range(min_epoch_count, epoch_count):
