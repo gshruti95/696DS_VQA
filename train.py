@@ -28,12 +28,12 @@ import time
 
 
 def check_and_get_gpu_instance(item):
-    return item.cuda()
-    '''
+    #return item.cuda()
+    
     if torch.cuda.is_available() == True:
         return item.cuda()
     return item
-    '''
+    
 
 def train(model, data_loader, optimizer, criterion, epoch_count, min_epoch_count = 0):
     #predict(model, config.DataMode.TRAIN)
@@ -93,7 +93,7 @@ def fit(model, min_epoch_count = 0):
 def predict(model, data_mode, print_values = False):
     print('Computing metrics for ' + data_mode + ' mode.')
     data_loader = get_data(data_mode)
-    model = model.eval()
+    model.eval()
     global_loss = 0
     batch_count = 0
     MAX_BATCH_COUNT = 30

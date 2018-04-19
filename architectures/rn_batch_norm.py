@@ -140,19 +140,18 @@ class RelNetBatchNorm(nn.Module):
         x = self.conv(img) ## x = (64 x 24 x 5 x 5)
         #print(x.size())
         ####################################### Batch norm logic STARTS #################################################################
-        '''
+        
         _, c, h, w = x.size()
         # find the conditional batch norm params
         conditional_batch_norm_param = self.batch_norm_predict_layer(qst)
-        #print(conditional_batch_norm_param.size())
         conditional_batch_norm_param = conditional_batch_norm_param.unsqueeze(2).unsqueeze(3).repeat(1, 1, h, w)
-        #print(conditional_batch_norm_param.size())
         # apply the condiitonal batch norm parameters
         img_mean = torch.mean(x, dim = 0)
         img_std = torch.std(x, dim = 0)
         img_norm = (x - img_mean) / (img_std + 1e-10) # add epsilon for stability reasons
+        
         img = conditional_batch_norm_param[:, 0 : self.filter_size] * img_norm + conditional_batch_norm_param[:, self.filter_size : 2 * self.filter_size]
-        '''
+        
         x = self.conv4(x)
         x = F.relu(x)
         x = self.batchNorm4(x)
@@ -171,7 +170,7 @@ class RelNetBatchNorm(nn.Module):
         # prepare coord tensor
         coord_tensor = torch.FloatTensor(config.BATCH_SIZE, object_count, 2)
         if torch.cuda.is_available():
-            self.coord_tensor = self.coord_tensor.cuda()
+            coord_tensor = coord_tensor.cuda()
         coord_tensor = Variable(coord_tensor)
         np_coord_tensor = np.zeros((config.BATCH_SIZE, object_count, 2))
         for i in range(object_count):
