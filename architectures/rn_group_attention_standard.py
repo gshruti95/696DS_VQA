@@ -156,7 +156,7 @@ class RelNetGroupAttentionStandard(nn.Module):
         # prepare coord tensor
         coord_tensor = torch.FloatTensor(config.BATCH_SIZE, object_count, 2)
         if torch.cuda.is_available():
-            self.coord_tensor = self.coord_tensor.cuda()
+            coord_tensor = coord_tensor.cuda()
         coord_tensor = Variable(coord_tensor)
         np_coord_tensor = np.zeros((config.BATCH_SIZE, object_count, 2))
         for i in range(object_count):
