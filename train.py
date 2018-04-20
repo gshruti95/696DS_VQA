@@ -23,6 +23,7 @@ from architectures import net_factory
 from data_loaders import data_loader_factory
 from enums import DataMode
 from enums import DataLoaderType
+from enums import ModelType
 
 import time
 
@@ -64,6 +65,8 @@ def train(model, data_loader, optimizer, criterion, epoch_count, min_epoch_count
             if mini_index % config.DISPLAY_LOSS_EVERY == 0:
             	print('loss for %d/%d epoch, %d/%d batch = %f' % (epoch_index + 1, epoch_count, mini_index + 1, len(data_loader), loss.data[0]))
             loss.backward()
+            if config.MODEL_TYPE == ModelType.RELATION_NETWORK_CONV_ATTENTION:
+                model.update_gradients(images.size()[0], questions)
             optimizer.step()
              
         if (epoch_index + 1) % config.DISPLAY_METRICS_EVERY == 0:
