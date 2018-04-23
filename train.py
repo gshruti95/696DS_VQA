@@ -71,12 +71,12 @@ def train(model, data_loader, optimizer, criterion, epoch_count, min_epoch_count
              
         if (epoch_index + 1) % config.DISPLAY_METRICS_EVERY == 0:
             predict(model, config.DataMode.TRAIN)
-            predict(model, config.DataMode.VAL)
-        
+            predict(model, config.DataMode.VAL, epoch_count=epoch_index)
+        '''
         if (epoch_index + 1) % config.CHECKPOINT_FREQUENCY == 0:
             model_path = config.MODEL_SAVE_FILEPATH + str(epoch_index + 1) + config.PYTORCH_FILE_EXTENSION
             save_model(model, epoch_index, model_path)
-        
+        '''
         sys.stdout.flush()
         print('Time taken to train epoch =' + str(time.time() - start_time))
     
@@ -93,7 +93,7 @@ def fit(model, min_epoch_count = 0):
     # train
     return train(model, data_loader, optimizer, criterion, config.EPOCH_COUNT, min_epoch_count = min_epoch_count)
 
-def predict(model, data_mode, print_values = False):
+def predict(model, data_mode, epoch_count = -1, print_values = False):
     print('Computing metrics for ' + data_mode + ' mode.')
     data_loader = get_data(data_mode)
     model.eval()
@@ -138,11 +138,15 @@ def predict(model, data_mode, print_values = False):
     if data_mode == DataMode.TEST:
         return # no stats to show for test mode since ground truth is not available
     print('Loss = ' + str(global_loss * 1.0 / (batch_count + 1e-10)))
-    print('Accuracy = ' + str(utilities.get_accuracy(confusion_matrix)))
+    accuracy = utilities.get_accuracy(confusion_matrix)
+    print('Accuracy = ' + str(accuracy))
     print('Precision = ' + str(utilities.get_precision(confusion_matrix)))
     print('Recall = ' + str(utilities.get_recall(confusion_matrix)))
     print('F1_score = ' + str(utilities.get_f1_score(confusion_matrix)))
 
+    if epoch_count > -1 and accuracy > config.GLOBAL_VALIDATION_ACCURACY:
+        config.GLOBAL_VALIDATION_ACCURACY = accuracy
+        save_model(model, epoch_count, config.MODEL_SAVE_FILEPATH)
 
 
 def load_model(model_path):
@@ -163,7 +167,7 @@ def save_model(model, epoch_index, model_path):
     state_dict[config.MODEL_STRING] = model
     if not os.path.exists(config.WORKING_DIR + config.MODEL_SAVE_DIRNAME):
         os.makedirs(config.WORKING_DIR + config.MODEL_SAVE_DIRNAME)
-    torch.save(state_dict, model_path)
+    torch.save(state_dict, config.MODEL_SAVE_FILEPATH)
 
 
 def get_data(data_mode):

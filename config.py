@@ -20,7 +20,7 @@ SORT_OF_CLEVR_DATASET_PATH = WORKING_DIR + 'datasets/SORT_OF_CLEVR/'
 # MODEL PATHS
 MODEL_SAVE_FILENAME = MODEL_TYPE # Default filename value set to model type specified above
 MODEL_SAVE_DIRNAME = MODEL_TYPE  # Default folder value set to model type specified above
-MODEL_SAVE_FILEPATH = WORKING_DIR + MODEL_SAVE_DIRNAME + '/' + MODEL_SAVE_FILENAME + '_' # Do not EDIT this variable
+MODEL_SAVE_FILEPATH = '' # MANUALLY PROVIDE THE PATH TO STORE MODEL
 MODEL_LOAD_FILEPATH = '' # Provide the Relative or absolute path to the model that you wish to load for inference or to resume training
 
 HYPERPARAM_FILENAME = 'hyperparams.txt' 
@@ -30,10 +30,10 @@ HYPERPARAM_FILENAME = 'hyperparams.txt'
 TRAIN_MODE = True
 USE_GPU = True
 DISPLAY_LOSS_EVERY = 20
-DISPLAY_METRICS_EVERY = 10
+DISPLAY_METRICS_EVERY = 1
 #-----------------------------------------------------------------------------------------
 # TRAINING HYPERPARAMETERS
-CHECKPOINT_FREQUENCY = 25
+CHECKPOINT_FREQUENCY = 1
 BATCH_SIZE = 100
 LEARNING_RATE = 1e-4
 WEIGHT_DECAY = 0.0
@@ -71,6 +71,7 @@ FILTER_SIZE = 'Filter size'
 REL_ANSWER_VOCAB_SIZE = 'REL ANSWER VOCAB SIZE'
 NOREL_ANSWER_VOCAB_SIZE = 'NOREL ANSWER VOCAB SIZE'
 ATTENTION_GROUP_SIZE = 'Attention group size in RN' 
+GLOBAL_VALIDATION_ACCURACY = 0.0
 #-------------------------------------------------------------------------------------------
 # Dataset Dictionaries
 CLEVR_DICTIONARY = {IMAGE_SIZE : 64, QUESTION_VOCAB_SIZE : 81, ANSWER_VOCAB_SIZE : 28, MAX_QUESTION_LENGTH : 44, CHANNEL_COUNT : 3}
@@ -86,9 +87,9 @@ SORT_OF_CLEVR_QUESTION_FILES = {DataMode.TRAIN : 'sort_of_clevr_train.json', Dat
 # Architecture Dictionaries
 RELATION_NETWORK_DICTIONARY = {
                                 QUESTION_EMBEDDING_SIZE : 256, ENABLE_BATCHNORM : False, LSTM_HIDDEN_DIM : 256, LSTM_LAYERS : 1,
-                                F_LAYER_DIM : 256, G_LAYER_DIM : 256, FILTER_SIZE : 24
+                                F_LAYER_DIM : 256, G_LAYER_DIM : 256, FILTER_SIZE : 64
                             }
 RELATION_GROUP_ATTENTION_NETWORK_DICTIONARY = {
                                 QUESTION_EMBEDDING_SIZE : 256, ENABLE_BATCHNORM : False, LSTM_HIDDEN_DIM : 256, LSTM_LAYERS : 1,
-                                F_LAYER_DIM : 256, G_LAYER_DIM : 256, FILTER_SIZE : 24, ATTENTION_GROUP_SIZE : 2
+                                F_LAYER_DIM : 256, G_LAYER_DIM : 256, FILTER_SIZE : 64, ATTENTION_GROUP_SIZE : 2
 }

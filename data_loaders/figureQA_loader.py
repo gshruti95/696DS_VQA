@@ -14,7 +14,7 @@ class FigureQADataset(data.Dataset):
     '''
     Provides deifnitions for the FigureQA dataset loader.
     '''
-    def __init__(self, data_mode, question_vocab, answer_vocab):
+    def __init__(self, data_mode, question_vocab, answer_vocab, USE_SAMPLING = True):
         self.question_vocab = question_vocab
         self.answer_vocab = answer_vocab
         self.images_path = config.FIGUREQA_DATASET_PATH + config.IMAGES + '/' + data_mode + '/'
@@ -22,9 +22,12 @@ class FigureQADataset(data.Dataset):
         question_json_filename = config.FIGUREQA_QUESTION_FILES[data_mode]
         question_json = file(questions_path + question_json_filename).read()
         questions_list = json.loads(question_json)
-        self.questions_list = questions_list #self.perform_question_preprocessing(questions_list)
-        
-    
+        self.questions_list = questions_list
+        # perform pruning of the questions list
+        if USE_SAMPLING == True:
+            sampling_ratio = 0.1
+            self.perform_question_sampling(sampling_ratio)
+
     def __getitem__(self, index):
         question_item = self.questions_list[index]
         question = question_item[config.QUESTION_KEY]
@@ -43,14 +46,24 @@ class FigureQADataset(data.Dataset):
     def __len__(self):
         return len(self.questions_list)
     
-    '''
-    def perform_question_preprocessing(self, questions_list):
-        modified_list = []
-        for item in questions_list:
-            if item.has_key(config.ANSWER_KEY) == True:
-                answer = item[config.ANSWER_KEY]
-                if len(answer) == 0:
-                    continue
-            modified_list.append(item)
-        return modified_list
-    '''
+    def perform_question_sampling(self, sampling_ratio):
+        temp_questions_list = []
+        question_type_dict = {}
+        for question_item in self.questions_list:
+            qid = question_item['question_type']
+            if question_type_dict.has_key(qid) == False:
+                question_type_dict[qid] = 1
+            else:
+                question_type_dict[qid] += 1
+
+        question_type_count = [0 for _ in xrange(len(question_type_dict.keys()))]
+
+        for question_item in self.questions_list:
+            qid = question_item['question_type']
+            qid_current_count = question_type_count[qid]
+            qid_max_count = question_type_dict[qid]
+            if qid_current_count < int(qid_max_count * sampling_ratio):
+                question_type_count[qid] += 1
+                temp_questions_list.append(question_item)
+        
+        self.questions_list = temp_questions_list
