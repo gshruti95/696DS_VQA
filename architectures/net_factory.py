@@ -4,6 +4,8 @@ This file contains the factory definitons for fetching the appropriate network f
 from enums import ModelType
 from baseline import BaselineModel
 from rn import RelNet
+from film import FiLM
+from modified_film import mod_FiLM
 from data_loaders import data_loader_factory
 import config
 from rn_group_attention_standard import RelNetGroupAttentionStandard
@@ -22,7 +24,9 @@ def get_network(network_type):
     elif network_type == ModelType.RELATION_NETWORK:
         return RelNet(dataset_dict, config.RELATION_NETWORK_DICTIONARY)
     elif network_type == ModelType.FILM:
-        pass
+        return FiLM(dataset_dict)
+    elif network_type == ModelType.mod_FILM:
+        return mod_FiLM(dataset_dict)
     elif network_type == ModelType.STACKED_CO_ATTENTION:
         pass
     elif network_type == ModelType.MEMORY_NETWORK:

@@ -25,6 +25,7 @@ Specified in Config file and used in factory definitions
 class ModelType(enumerate):
     BASELINE = 'BASELINE'
     FILM = 'FiLM'
+    mod_FILM = 'mod_FiLM'
     RELATION_NETWORK = 'RELATION_NETWORK'
     STACKED_CO_ATTENTION = 'STACKED_CO_ATTENTION'
     MEMORY_NETWORK = 'MEMORY_NETWORK'
