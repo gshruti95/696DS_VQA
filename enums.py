@@ -26,6 +26,7 @@ class ModelType(enumerate):
     BASELINE = 'BASELINE'
     FILM = 'FiLM'
     mod_FILM = 'mod_FiLM'
+    bn_mod_FILM = 'bn_mod_FiLM'
     RELATION_NETWORK = 'RELATION_NETWORK'
     STACKED_CO_ATTENTION = 'STACKED_CO_ATTENTION'
     MEMORY_NETWORK = 'MEMORY_NETWORK'
