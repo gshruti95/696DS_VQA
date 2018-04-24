@@ -9,6 +9,7 @@ from scipy import misc
 import config
 import utilities
 import json
+from enums import DataMode
 
 class FigureQADataset(data.Dataset):
     '''
@@ -24,7 +25,7 @@ class FigureQADataset(data.Dataset):
         questions_list = json.loads(question_json)
         self.questions_list = questions_list
         # perform pruning of the questions list
-        if USE_SAMPLING == True:
+        if USE_SAMPLING == True and data_mode == DataMode.TRAIN:
             sampling_ratio = 0.1
             self.perform_question_sampling(sampling_ratio)
 
