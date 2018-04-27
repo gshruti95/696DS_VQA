@@ -10,6 +10,8 @@ import json
 from data_loaders import data_loader_factory
 from scipy import misc
 from enums import DataMode
+from enums import DataLoaderType
+import operator
 
 
 def perform_dataset_preprocessing():
@@ -136,3 +138,19 @@ def get_confusion_matrix(predicted_array, true_array):
         predicted_class = predicted_array[index]
         temp_confusion_matrix[true_class, predicted_class] += 1
     return temp_confusion_matrix
+
+
+def print_class_statistics(confusion_matrix):
+    class_accuracy_dict = {}
+    if config.DATALOADER_TYPE == DataLoaderType.SORT_OF_CLEVR:
+        class_list = ['yes', 'no', 'rectangle', 'circle', 'r', 'g', 'b', 'o', 'k', 'y']
+    else:
+        _, class_list = data_loader_factory.get_dataset_vocab(config.DATALOADER_TYPE)
+    sum_matrix = np.sum(confusion_matrix, axis = 1)
+    for index in xrange(confusion_matrix.shape[0]):
+        class_name = class_list[index]
+        class_accuracy_dict[class_name] = confusion_matrix[index, index] / (sum_matrix[index] + 1e-10)
+    
+    class_accuracy_dict = sorted(class_accuracy_dict.items(), key=operator.itemgetter(1))
+    print(class_accuracy_dict)
+    

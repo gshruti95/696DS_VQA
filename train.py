@@ -128,11 +128,20 @@ def predict(model, data_mode, epoch_count = -1, print_values = False):
         target_array = target_labels.cpu().data.numpy() #(N,)
         confusion_matrix = confusion_matrix + utilities.get_confusion_matrix(predicted_array, target_array)
         
-        if print_values:
+        if print_values and config.DATALOADER_TYPE != DataLoaderType.SORT_OF_CLEVR:
+            question_vocab_list, answer_vocab_list = data_loader_factory.get_dataset_vocab(config.DATALOADER_TYPE)
+            questions = questions.cpu().data.numpy()
             for index in xrange(predicted_array.shape[0]):
-                predicted_value = predicted_array[index]
-                true_value = target_array[index]
-                print('True value = ' + str(true_value) + ' and predicted value = ' + str(predicted_value))
+                predicted_value = answer_vocab_list[predicted_array[index]]
+                true_value = answer_vocab_list[target_array[index]]
+                question_string = ''
+                for q_index in xrange(questions.shape[1]):
+                    question_word = questions[index, q_index]
+                    if question_word == len(question_vocab_list):
+                        break
+                    question_string = question_string + question_vocab_list[question_word] + ' '
+
+                print('Question =' + question_string + 'True value = ' + str(true_value) + ' predicted value = ' + str(predicted_value))
 
     # compute accuracy, precision, recall and f1-score
     if data_mode == DataMode.TEST:
@@ -143,6 +152,7 @@ def predict(model, data_mode, epoch_count = -1, print_values = False):
     print('Precision = ' + str(utilities.get_precision(confusion_matrix)))
     print('Recall = ' + str(utilities.get_recall(confusion_matrix)))
     print('F1_score = ' + str(utilities.get_f1_score(confusion_matrix)))
+    utilities.print_class_statistics(confusion_matrix)
 
     if epoch_count > -1 and accuracy > config.GLOBAL_VALIDATION_ACCURACY:
         config.GLOBAL_VALIDATION_ACCURACY = accuracy
@@ -224,7 +234,8 @@ def main():
             print('Provide appropriate model path and rerun for inference')
             return    
     # perform prediction
-	predict(model, DataMode.TEST, print_values = True)
+    predict(model, DataMode.VAL, print_values = True)
+    predict(model, DataMode.TEST, print_values = True)
 
 
 if __name__ == '__main__':
