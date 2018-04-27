@@ -185,7 +185,7 @@ def get_data(data_mode):
     Returns the data loader iterator based on the data_mode(train, val or test)
     '''
     custom_dataset = data_loader_factory.get_data_loader(config.DATALOADER_TYPE, data_mode)
-    if data_mode == DataMode.TEST:
+    if data_mode == DataMode.TEST or config.TRAIN_MODE == False:
         data_loader = torch.utils.data.DataLoader(dataset = custom_dataset, batch_size = config.BATCH_SIZE, shuffle = False)
     else:
         data_loader = torch.utils.data.DataLoader(dataset = custom_dataset, batch_size = config.BATCH_SIZE, shuffle = True)
