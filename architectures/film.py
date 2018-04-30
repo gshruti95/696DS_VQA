@@ -137,6 +137,6 @@ class FiLM(nn.Module):
             out = resblock(out, film[i * 2], film[i * 2 + 1])
 
         out = self.classifier(out)
-        out = F.log_softmax(out, dim=0)
+        out = F.log_softmax(out, dim=1)
        
         return out

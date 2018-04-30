@@ -150,6 +150,6 @@ class mod_FiLM(nn.Module):
             rnn_inp = res_lin(res_out)
 
         out = self.classifier(out)
-        out = F.log_softmax(out, dim=0)
+        out = F.log_softmax(out, dim=1)
 
         return out

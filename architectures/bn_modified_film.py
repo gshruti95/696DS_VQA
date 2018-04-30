@@ -153,6 +153,6 @@ class bn_mod_FiLM(nn.Module):
             out, lin_h = resblock(out, i, lin_h)
 
         out = self.classifier(out)
-        out = F.log_softmax(out, dim=0)
+        out = F.log_softmax(out, dim=1)
 
         return out
