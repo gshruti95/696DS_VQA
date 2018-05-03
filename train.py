@@ -152,7 +152,8 @@ def predict(model, data_mode, epoch_count = -1, print_values = False):
     print('Precision = ' + str(utilities.get_precision(confusion_matrix)))
     print('Recall = ' + str(utilities.get_recall(confusion_matrix)))
     print('F1_score = ' + str(utilities.get_f1_score(confusion_matrix)))
-    utilities.print_class_statistics(confusion_matrix)
+    if config.TRAIN_MODE == False:
+        utilities.print_class_statistics(confusion_matrix)
 
     if epoch_count > -1 and accuracy > config.GLOBAL_VALIDATION_ACCURACY:
         config.GLOBAL_VALIDATION_ACCURACY = accuracy

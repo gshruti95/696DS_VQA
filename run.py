@@ -25,7 +25,7 @@ lr_list = [2e-5]
 weight_decay_list = [1e-5]
 batch_size = 100
 epoch_count = 100
-model_save_path = './figureqa_models/'
+model_save_path = './models/'
 ###########################################################################################################################
 if os.path.exists(model_save_path) == False:
     os.mkdir(model_save_path)
@@ -33,11 +33,11 @@ config.BATCH_SIZE = batch_size
 config.EPOCH_COUNT = epoch_count
 for network_item in network_list:
     config.MODEL_TYPE = network_item
-    config.MODEL_SAVE_FILEPATH = model_save_path + network_item + '.pt'
     for dataset_item in dataset_list:
         config.DATALOADER_TYPE = dataset_item
         for lr_item in lr_list:
             for weight_decay_item in weight_decay_list:
                 config.LEARNING_RATE = lr_item
                 config.WEIGHT_DECAY = weight_decay_item
+                config.MODEL_SAVE_FILEPATH = model_save_path + network_item + '_' + str(dataset_item) + '_' + str(lr_item) + '_' + str(weight_decay_item) + '.pt'
                 train.main()
